@@ -32,6 +32,15 @@
 
   $: console.log(data)
 
+  // let geoJsonData = {}
+  let projectionType = d3.geoEquirectangular();
+  let geoGenerator = d3.geoPath().projection(projectionType);
+  let u = d3.select('#content g.map')
+    .selectAll('path')
+    .data(geojsonData.features)
+    .join('path')
+    .attr('d', geoGenerator);
+
   const ttWidth = 180;
   const ttHeight = 200;
   const ttPaddingTop = 30;
