@@ -214,8 +214,78 @@ svg.append("text")
   <Graph {data}/>
   <!-- svelte-ignore a11y-missing-attribute -->
   <html>
+    <head>
+      
+      <title>DSC 106 Final Group Project</title>
+      <meta charset="utf-8"/>
+      <link rel="icon" href="%sveltekit.assets%/favicon.png" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      
+    </head>
+
     <body>
-    
+      <h1>Two Methods for Measuring Economic Health</h1>
+      <h2>Gross Domestic Product per Capita and the Gini Coefficient</h2>
+  
+      <div>
+        <h3>Gross Domestic Product</h3>
+        <p>There are many ways to measure the strength of a country's economy such as:</p>
+        <ul>
+          <li>Trade (imports and exports)</li>
+          <li>Labor force participation (employed, unemployed, and not in the labor force)</li>
+          <li>Income</li>
+        </ul>
+        <p>GDP tends to be the most popular statistic for indicating a nation's wealth given it measures the "monetary value of final goods and services" which is the sum of all consumption, investment, government purchases, and net exports (exports minus imports) over a given period of time.</p>
+      </div>
+  
+      <div style="display: contents">
+        <svg id="gdp_choropleth" width="400" height="300"></svg>
+        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+        <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+      </div>
+  
+      <div>
+        <h3>Why could GDP possibly be flawed?</h3>
+        <p>GDP doesn't give a full picture of how economic prosperity is distributed given:</p>
+        <ul>
+          <li>Large countries may have greater GDPs due to simply having a large population, leading many to prefer using GDP per capita.</li>
+          <li>A high GDP per capita may also not indicate that all of the nation's people are benefitting much from the total wealth due to how it's distributed across the population.</li>
+        </ul>
+        <h3>The Gini Index</h3>
+        <p>Economic inequality within a nation can be indicated with the Gini index which is derived from the Lorenz curve, a graph of the population's income distribution. The graph has the percent of the population on the x-axis and the proportion of overall income earned by said percent of the population on the y-axis. A line angled at 45 degrees (therefore having a slope of 1) represents perfect equality (so that half of the population earns exactly half of the income for example) an the Gini index is the area between the Lorenz curve and said line at 45 degrees, meaning a greater Gini index indicates greater inequality.</p>
+      </div>
+  
+      <div style="display: contents">
+        <svg id="lorenz_curve" width="400" height="300"></svg>
+      </div>
+  
+      <div style="display: contents">
+        <svg id="gini_choropleth" width="400" height="300"></svg>
+        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+        <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+      </div>
+  
+      <div>
+        <p>Comparing the Two Measurements:</p>
+        <ul>
+          <li>There are pros and cons to using each of the measurements.</li>
+          <li>GDP measures economic activity well, but fails to provide information on what proportion of the population is involved in said activity.</li>
+          <li>The Gini index descrives wealth distribution well, but does not indicate the level of either cumulative or average wealth.</li>
+          <li>A more accurate picture can be acquired through looking at both measures.</li>
+        </ul>
+      </div>
+  
+      <div style="display: contents">
+        <svg id="scatterplot" width="400" height="300"></svg>
+      </div>
+  
+      <div>
+        <h2>Demo Writeup</h2>
+        <h3>What have you done so far?</h3>
+        <p>This demo contains two of our planned visualizations and pulls from two datasets we cleaned. One is a scatterplot that displays the gini index and GDP per capita data for each country for any year chosen by the user. The other is the Lorenz curve which is shaped by user input of the gini index. This demo also contains much of the background information and analysis that will make up the final product's text.</p>
+        <h3>What will be the most challenging of your project to design and why?</h3>
+        <p>The most challenging aspects of finishing the project will be adding more interactive elements to our visualizations without them interfering with how said visualizations are initially displayed. Making these visualizations (and therefore interactive components) aesthetically pleasing without impeding on how effectively they communicate our message will also be challenging due in part to the subjective nature of many of the design decisions that will need to be made. Significant time may also need to be invested into forming more of a storyline that helps viewers explore our topics and better understand the economics-related message we our aiming to convey. Continuing to become familiar with d3.js syntax as well as other technical skills (such as working with GeoJSON data) will also take some time in order to accomplish the previously-mentioned tasks.</p>
+      </div>
 
     <div id="lorenzCurve"></div>
     <input type="range" name="range" class="slider" id="giniSlider" value="0.1"
@@ -224,6 +294,7 @@ svg.append("text")
         
         <br>
     <div></div>
+    
 
 
     </body>
@@ -231,6 +302,11 @@ svg.append("text")
 </main>
 
 <style>
+
+    @import
+    url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap");
+    @import
+    url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap");
   /* Write your CSS here */
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&display=swap');
 
@@ -251,19 +327,33 @@ svg.append("text")
     box-sizing: border-box;
   }
 
-  main {
-    text-align: center;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 300;
-    line-height: 2;
-    font-size: 24px;
-    color: var(--color-text);
-  }
-/*
-  h1 {
-    font-size: 2em;
-    font-weight: 300;
-    line-height: 2;
-  }
-*/  
+
+    main {
+        text-align: center;
+        color: #27323F;
+        font-family:'Libre Baskerville', serif;
+        font-size:12px;
+        line-height: 1.8em;
+        
+    }
+
+    h1 {
+        font-family:'League Spartan', sans-serif;
+        font-size: 24pt;
+        padding:20px;
+    }
+    h2 {
+        font-size: 12pt;
+        padding:20px
+    }
+    h3 {
+        font-size: 12pt;
+        padding:20px
+    }
+    p {
+        font-size: 10pt;
+        padding:10px;
+    }
+    
+    body {background-color:#DDE6ED;}
 </style>
