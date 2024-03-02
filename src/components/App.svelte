@@ -57,7 +57,7 @@ onMount(async () => {
 
 
 function drawLorenz(lorenzData){
-var margin = {top: 30, right: 30, bottom: 60, left: 60},
+var margin = {top: 30, right: 30, bottom: 45, left: 60},
 width = 460 - margin.left - margin.right,
 height = 400 - margin.top - margin.bottom;
 
@@ -147,6 +147,7 @@ svg.append("text")
     .attr("class", "x label")
     .attr("text-anchor", "end")
     .attr("x", width)
+    .attr("font-size", 14)
     .attr("y", height+40)
     .text("Percent of Population");
 
@@ -155,6 +156,7 @@ svg.append("text")
     .attr("text-anchor", "end")
     .attr("y", -50)
     .attr("dy", ".75em")
+    .attr("font-size", 14)
     .attr("transform", "rotate(-90)")
     .text("Percent of Income");
 
@@ -163,7 +165,7 @@ svg.append("text")
     .attr("x", (width / 2))             
     .attr("y", 0 - (margin.top / 2))
     .attr("text-anchor", "middle")  
-    .style("font-size", "16px") 
+    .style("font-size", "18px") 
     .style("text-decoration", "underline")  
     .text("Lorenz Curve and Gini Coefficient");
 
@@ -213,22 +215,12 @@ svg.append("text")
   <!-- svelte-ignore a11y-missing-attribute -->
   <html>
     <body>
-    <header style="background-color:#9DB2BF;padding:50px;margin:0px">
-        <h1 >Header</h1>
-        <h2>Subtitle 1</h2>
-        <p>Subtitle 2</p>
-    </header>
-
     
-
-    <!-- <svg width="1000" height="200" xmlns="http://www.w3.org/2000/svg">
-        <rect width="1000" height="100" x="0" y="0" rx="20" ry="20" fill="blue" />
-      </svg> -->
 
     <div id="lorenzCurve"></div>
     <input type="range" name="range" class="slider" id="giniSlider" value="0.1"
 		min="0.1" max="0.5" step="0.1" oninput="sliderChange(this.value)">
-    <span id="giniVal">Gini Coefficient: 0.1</span>
+    <span id="giniVal" style="font-size:14px">Gini Coefficient: 0.1</span>
         
         <br>
     <div></div>
