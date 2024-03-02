@@ -228,7 +228,7 @@ svg.append("text")
       <h2>Gross Domestic Product per Capita and the Gini Coefficient</h2>
   
       <div>
-        <h3>Gross Domestic Product</h3>
+        <h3>Gross Domestic Product (GDP)</h3>
         <p>There are many ways to measure the strength of a country's economy such as:</p>
         <ul>
           <li>Trade (imports and exports)</li>
@@ -288,11 +288,7 @@ svg.append("text")
         <p>This demo contains two of our planned visualizations and pulls from two datasets we cleaned. One is a scatterplot that displays the gini index and GDP per capita data for each country for any year chosen by the user. The other is the Lorenz curve which is shaped by user input of the gini index. This demo also contains much of the background information and analysis that will make up the final product's text.</p>
         <h3>What will be the most challenging of your project to design and why?</h3>
         <p>The most challenging aspects of finishing the project will be adding more interactive elements to our visualizations without them interfering with how said visualizations are initially displayed. Making these visualizations (and therefore interactive components) aesthetically pleasing without impeding on how effectively they communicate our message will also be challenging due in part to the subjective nature of many of the design decisions that will need to be made. Significant time may also need to be invested into forming more of a storyline that helps viewers explore our topics and better understand the economics-related message we our aiming to convey. Continuing to become familiar with d3.js syntax as well as other technical skills (such as working with GeoJSON data) will also take some time in order to accomplish the previously-mentioned tasks.</p>
-      </div>
-
-    
-    <div></div>
-    
+      </div>    
 
 
     </body>
@@ -339,6 +335,7 @@ svg.append("text")
         font-family:'League Spartan', sans-serif;
         font-size: 24pt;
         padding:20px;
+        text-align:center;
     }
     h2 {
         font-size: 12pt;
@@ -351,6 +348,10 @@ svg.append("text")
     p {
         font-size: 10pt;
         padding:10px;
+    }
+    li {
+      text-indent:5px;
+      margin:25px;
     }
     
     body {background-color:#DDE6ED;}
