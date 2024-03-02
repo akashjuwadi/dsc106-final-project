@@ -61,23 +61,13 @@
             .text("GDP (current US$)");
     }
     
-    onMount(() => {
-    console.log("Received data:", data); // Debugging statement to check if data is received
-    
+    onMount(() => {    
     // Filter data based on the target year and country code
-    const filteredData = data.filter(d => d.year === 2017);
-    console.log("Filtered data:", filteredData); // Debugging statement to check filtered data
-    
+    const filteredData = data.filter(d => d.year === 2017);    
     // Extract Gini index (SI.POV.GINI) and GDP (current US$) (NY.GDP.MKTP.CD) values from filtered data
     const giniValues = filteredData.filter(d => d.indicator_code === "SI.POV.GINI").map(d => d.value);
     const gdpValues = filteredData.filter(d => d.indicator_code === "NY.GDP.MKTP.CD").map(d => d.value);
-    const country_name = filteredData.filter(d => d.indicator_code === "SI.POV.GINI").map(d => d.country_name);
-    console.log("Gini values:", giniValues); // Debugging statement to check Gini values
-    console.log("GDP values:", gdpValues); // Debugging statement to check GDP values
-    console.log("Country names:", country_name); // Debugging statement to check country names
-    
-    // Ensure that data is not filtered out
-    console.log("Filtered out data:", giniValues.filter((d, i) => d === 0 || gdpValues[i] === 0)); 
+    const country_name = filteredData.filter(d => d.indicator_code === "SI.POV.GINI").map(d => d.country_name); 
     
     const filteredCountryName = [];
     const filteredGiniValues = [];
@@ -89,9 +79,6 @@
             filteredCountryName.push(country_name[i]);
         }
     }
-    console.log("Filtered Gini values:", filteredGiniValues); // Debugging statement to check filtered Gini values
-    console.log("Filtered GDP values:", filteredGdpValues); // Debugging statement to check filtered GDP values
-    console.log("Filtered country names:", filteredCountryName); // Debugging statement to check filtered country names
     
     // Render the scatterplot with the filtered data
     Scatter(filteredCountryName, filteredGiniValues, filteredGdpValues);
