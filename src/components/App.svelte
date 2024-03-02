@@ -211,15 +211,11 @@ svg.append("text")
 </script>
 
 <main>
-  <Graph {data}/>
   <!-- svelte-ignore a11y-missing-attribute -->
   <html>
     <head>
       
       <title>DSC 106 Final Group Project</title>
-      <meta charset="utf-8"/>
-      <link rel="icon" href="%sveltekit.assets%/favicon.png" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
       
     </head>
 
