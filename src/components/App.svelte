@@ -11,6 +11,8 @@
   const marginLeft = 40;
 
   let data = [];
+  let targetYear = "1964";
+  let targetCountryCode = "USA";
 
   onMount(async () => {
       const res = await fetch(
@@ -19,20 +21,19 @@
       const csv = await res.text();
       await d3.csvParse(csv, (d) => {
           data.push({
-             year: new Date(Date.UTC(d["Year"])),
-             country_name: d["Country Code"],
-             country_code: d["Country Name"],
+             year: +d["Year"],
+             country_name: d["Country Name"],
+             country_code: d["Country Code"],
              indicator_code: d["Indicator Code"],
              indicator_name: d["Indicator Name"],
-             value: d["Value"],
+             value: +d["Value"],
           });
       });
       data = data;
   });
-
+  /*
   $: console.log(data)
-
-  // let geoJsonData = {}
+  let geoJsonData = {}
   let projectionType = d3.geoEquirectangular();
   let geoGenerator = d3.geoPath().projection(projectionType);
   let u = d3.select('#content g.map')
@@ -60,10 +61,11 @@
     const [_, groupData] = area[i].data; // still needs to be modified
     selectedPoint = groupData.get(name(area.key)).get(sex(area.key)); // still needs to be modified
   }
+  */
 </script>
 
 <main>
-  <Graph {data} />
+  <Graph {data}/>
 </main>
 
 <style>
@@ -95,10 +97,11 @@
     font-size: 24px;
     color: var(--color-text);
   }
-
+/*
   h1 {
     font-size: 2em;
     font-weight: 300;
     line-height: 2;
   }
+*/  
 </style>
