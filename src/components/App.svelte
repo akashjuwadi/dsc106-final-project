@@ -289,6 +289,7 @@ svg.append("text")
 
     </body>
     </html>
+<Graph {data}/>
 </main>
 
 <style>
