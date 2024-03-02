@@ -16,7 +16,7 @@
 
   onMount(async () => {
       const res = await fetch(
-          '/gdp_gini_filtered_data.csv',
+          '/gdp_gini_filtered_data_with_na.csv',
       );
       const csv = await res.text();
       await d3.csvParse(csv, (d) => {
@@ -165,7 +165,7 @@ svg.append("text")
     .attr("x", (width / 2))             
     .attr("y", 0 - (margin.top / 2))
     .attr("text-anchor", "middle")  
-    .style("font-size", "18px") 
+    .style("font-size", "14px") 
     .style("text-decoration", "underline")  
     .text("Lorenz Curve and Gini Coefficient");
 
@@ -223,7 +223,7 @@ svg.append("text")
       
     </head>
 
-    <body>
+    <body style="margin:100px">
       <h1>Two Methods for Measuring Economic Health</h1>
       <h2>Gross Domestic Product per Capita and the Gini Coefficient</h2>
   
@@ -255,9 +255,12 @@ svg.append("text")
         <p>Economic inequality within a nation can be indicated with the Gini index which is derived from the Lorenz curve, a graph of the population's income distribution. The graph has the percent of the population on the x-axis and the proportion of overall income earned by said percent of the population on the y-axis. A line angled at 45 degrees (therefore having a slope of 1) represents perfect equality (so that half of the population earns exactly half of the income for example) an the Gini index is the area between the Lorenz curve and said line at 45 degrees, meaning a greater Gini index indicates greater inequality.</p>
       </div>
   
-      <div style="display: contents">
-        <svg id="lorenz_curve" width="400" height="300"></svg>
-      </div>
+      <div id="lorenzCurve"></div>
+      <input type="range" name="range" class="slider" id="giniSlider" value="0.1"
+      min="0.1" max="0.5" step="0.1" oninput="sliderChange(this.value)">
+      <span id="giniVal" style="font-size:14px">Gini Coefficient: 0.1</span>
+          
+        <br>
   
       <div style="display: contents">
         <svg id="gini_choropleth" width="400" height="300"></svg>
@@ -287,12 +290,7 @@ svg.append("text")
         <p>The most challenging aspects of finishing the project will be adding more interactive elements to our visualizations without them interfering with how said visualizations are initially displayed. Making these visualizations (and therefore interactive components) aesthetically pleasing without impeding on how effectively they communicate our message will also be challenging due in part to the subjective nature of many of the design decisions that will need to be made. Significant time may also need to be invested into forming more of a storyline that helps viewers explore our topics and better understand the economics-related message we our aiming to convey. Continuing to become familiar with d3.js syntax as well as other technical skills (such as working with GeoJSON data) will also take some time in order to accomplish the previously-mentioned tasks.</p>
       </div>
 
-    <div id="lorenzCurve"></div>
-    <input type="range" name="range" class="slider" id="giniSlider" value="0.1"
-		min="0.1" max="0.5" step="0.1" oninput="sliderChange(this.value)">
-    <span id="giniVal" style="font-size:14px">Gini Coefficient: 0.1</span>
-        
-        <br>
+    
     <div></div>
     
 
@@ -329,7 +327,7 @@ svg.append("text")
 
 
     main {
-        text-align: center;
+        text-align: left;
         color: #27323F;
         font-family:'Libre Baskerville', serif;
         font-size:12px;
