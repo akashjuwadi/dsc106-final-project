@@ -12,6 +12,7 @@
     "@sveltejs/adapter-static": "^3.0.1",
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "csv-loader": "^3.0.5",
     "svelte": "^4.2.12",
     "vite": "^5.0.3"
   },

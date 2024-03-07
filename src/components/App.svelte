@@ -2,6 +2,10 @@
   import * as d3 from 'd3';
   import { onMount } from 'svelte';
   import Graph from './Graph.svelte';
+  import ChoroplethGDP from './Choropleth-GDP.svelte';
+  //import gdpData from './data.json';
+  import ChoroplethGini from './Choropleth-Gini.svelte';
+  //import giniData from './data.json';
 
   const width = 928;
   const height = 500;
@@ -174,40 +178,6 @@ svg.append("text")
 
 };
 
-
-
-
-  /*
-  $: console.log(data)
-  let geoJsonData = {}
-  let projectionType = d3.geoEquirectangular();
-  let geoGenerator = d3.geoPath().projection(projectionType);
-  let u = d3.select('#content g.map')
-    .selectAll('path')
-    .data(geojsonData.features)
-    .join('path')
-    .attr('d', geoGenerator);
-
-  const ttWidth = 180;
-  const ttHeight = 200;
-  const ttPaddingTop = 30;
-  const ttPaddingLeft = 15;
-  const ttLineHeight = 36;
-
-  let mousePosition = [0, 0];
-  function recordMousePosition(event) {
-    mousePosition = d3.pointer(event);
-  }
-  const bisect = d3.bisector((d) => d.data[0]).center;
-  let selectedArea = null;
-  let selectedPoint = null;
-  function setSelected(area) {
-    selectedArea = area;
-    const i = bisect(area, x.invert(mousePosition[0])); // x must be defined
-    const [_, groupData] = area[i].data; // still needs to be modified
-    selectedPoint = groupData.get(name(area.key)).get(sex(area.key)); // still needs to be modified
-  }
-  */
 </script>
 
 <main>
@@ -233,7 +203,7 @@ svg.append("text")
         </ul>
         <p>GDP tends to be the most popular statistic for indicating a nation's wealth given it measures the "monetary value of final goods and services" which is the sum of all consumption, investment, government purchases, and net exports (exports minus imports) over a given period of time.</p>
       </div>
-  
+
       <div style="display: contents">
         <svg id="gdp_choropleth" width="400" height="300"></svg>
         <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
