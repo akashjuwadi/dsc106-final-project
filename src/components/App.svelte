@@ -118,7 +118,7 @@
              country: d["country"],
              country_code: d["country_code"],
              gdp: +d["gdp"],
-             gini: +d["gini"],
+             gini: +d["gini"]/100,
           };
       });
       // data = data;
