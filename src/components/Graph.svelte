@@ -5,8 +5,9 @@
     import { select } from 'd3-selection';
     export let data;
     
+    
     // Define the Scatter component as a Svelte function
-    function Scatter(filteredCountryName, filteredGiniValues, filteredGdpValues) {
+    export function Scatter(filteredCountryName, filteredGiniValues, filteredGdpValues) {
         // Define the SVG dimensions and margins
         const margin = { top: 20, right: 50, bottom: 50, left: 100 };
         const width = 1000 - margin.left - margin.right;
