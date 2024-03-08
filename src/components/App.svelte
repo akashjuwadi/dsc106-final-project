@@ -42,7 +42,7 @@
       <div id="lorenzCurve" align="center"><input type="range" name="range" class="slider" id="giniSlider" value="0.1"
         min="0.1" max="0.5" step="0.1" >
         <span id="giniVal" style="font-size:14px" align="center">Gini Coefficient: 0.1</span>
-        <div id="tooltip" opacity='0' position="absolute" marginTop=200 align="center"></div>
+        <div id="lorenzInfo">The poorest 50% of the population owns 42% of the wealth.</div>
           <br></div>
       
       <!-- <input type="range" name="range" class="slider" id="giniSlider" value="0.1"
@@ -89,7 +89,9 @@
   import * as d3 from 'd3';
   import { onMount } from 'svelte';
   import Graph from './Graph.svelte';
-  // import ChoroplethGDP from './Choropleth-GDP.svelte';
+  import { scaleLinear } from 'd3-scale';
+  //import Scatter from './Graph.svelte';
+  //import ChoroplethGDP from './Choropleth-GDP.svelte';
   //import gdpData from './data.json';
   //import ChoroplethGini from './Choropleth-Gini.svelte';
   //import giniData from './data.json';
@@ -107,23 +109,43 @@
 
   onMount(async () => {
       const res = await fetch(
-          '/gdp_per_capita_gini_filtered_data.csv',
+          '/gdp_gini.csv',
       );
       const csv = await res.text();
-      await d3.csvParse(csv, (d) => {
-          data.push({
-             year: +d["Year"],
-             country_name: d["Country Name"],
-             country_code: d["Country Code"],
-             indicator_code: d["Indicator Code"],
-             indicator_name: d["Indicator Name"],
-             value: +d["Value"],
-          });
+      data = d3.csvParse(csv, function(d){
+          return{
+             year: +d["year"],
+             country: d["country"],
+             country_code: d["country_code"],
+             gdp: +d["gdp"],
+             gini: +d["gini"],
+          };
       });
-      data = data;
+      // data = data;
 
+    // Filter data based on the target year and country code
+    const filteredData = data.filter(d => d.year === 2017);    
 
-      Scatter(filteredCountryName, filteredGiniValues, filteredGdpValues);
+    // // Extract Gini index (SI.POV.GINI) and GDP (current US$) (NY.GDP.MKTP.CD) values from filtered data
+    // const giniValues = filteredData.filter(d => d.indicator_code === "SI.POV.GINI").map(d => d.value);
+    // const gdpValues = filteredData.filter(d => d.indicator_code === "NY.GDP.MKTP.CD").map(d => d.value);
+    // const country_name = filteredData.filter(d => d.indicator_code === "SI.POV.GINI").map(d => d.country_name); 
+    
+    // const filteredCountryName = [];
+    // const filteredGiniValues = [];
+    // const filteredGdpValues = [];
+    // for (let i = 0; i < giniValues.length; i++) {
+    //     if (giniValues[i] !== 0 && gdpValues[i] !== 0) {
+    //         filteredGiniValues.push(giniValues[i]);
+    //         filteredGdpValues.push(gdpValues[i]);
+    //         filteredCountryName.push(country_name[i]);
+    //     }
+    // }
+
+    console.log(filteredData);
+
+    drawScatter(filteredData);
+    //drawScatter(filteredCountryName, filteredGiniValues, filteredGdpValues);
   });
 
   let lorenzData = [];
@@ -239,37 +261,15 @@ function update(gini){
         
 };
 
-// tooltip
-d3.select("#lorenzCurve").on('mouseover', function(d) {
-          d3.select('#tooltip')
-          .transition()
-          .duration(200);
-
-          var wealth = Math.round(filterData(lorenzData, gini)[5]['income'] * 100);
-          d3.select("#tooltip")
-          .style('opacity', 1)
-          .text(`The poorest 50% of the population owns ${wealth}% of the wealth`)
-          .style("font-weight", "bold");
-        })
-        .on('mouseout', function() {
-          d3.select('#tooltip').style('opacity', 0)
-        })
-        .on('mousemove', function() {
-          d3.select('#tooltip')
-          .style('right', (d3.pageX+20) + 'px')
-          .style('top', (d3.pageY+20) + 'px')
-        });
 
 // slider updates gini value and draws new lorenz curve
 d3.select("#giniSlider").on("input", function(){
     gini = Number(this.value);
     update(gini);
+    var wealth = Math.round(filterData(lorenzData, gini)[5]['income'] * 100);
     document.getElementById("giniVal").textContent=`Gini Coefficient: ${gini}`;
+    document.getElementById("lorenzInfo").textContent=`The poorest 50% of the population owns ${wealth}% of the wealth.`
 });
-
-
-
- 
 
 
 // axis lables 
@@ -297,12 +297,73 @@ svg.append("text")
     .attr("text-anchor", "middle")  
     .style("font-size", "14px") 
     .style("text-decoration", "underline")  
-    .text("Lorenz Curve and Gini Coefficient");
+    .text("Lorenz Curve");
 
 // shading?
 // tooltip to show 
 
 };
+
+// Define the Scatter component as a Svelte function
+function drawScatter(filteredData) {
+        // Define the SVG dimensions and margins
+        const margin = { top: 20, right: 50, bottom: 50, left: 100 };
+        const width = 1000 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
+
+        // Append SVG container to the body
+        const svg = d3.select("#scatterplot")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Define scales for x and y axes
+        var xScale = scaleLinear()
+            .domain(d3.extent(filteredData, function(d){return d.gini}))
+            .range([0, width]);
+        console.log(filteredData.gini)
+        // Add x-axis
+        svg.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom().scale(xScale));
+
+        var yScale = scaleLinear()
+            .domain(d3.extent(filteredData, function(d){return d.gdp}))
+            .range([height, 0]);
+        
+        // Add y-axis with custom tick format
+        svg.append("g")
+            .call(d3.axisLeft().scale(yScale).tickFormat(d => d / 1e9 + "B"));
+
+        // Plot points with tooltip
+        svg.append("g")
+            .selectAll("dot")
+            .data(filteredData)
+            .enter()
+            .append("circle")
+              .attr("cx", function(d){ return xScale(d.gini);})
+              .attr("cy", function(d){ return yScale(d.gdp)})
+              .attr("r", 5) // radius of the circles
+              //.append("title")
+            // .text((d, i) => `Country: ${d}\nGDP: ${(filteredGdpValues[i] / 1e9).toFixed(3)}B\nGini: ${filteredGiniValues[i]}`)
+            // .style("fill", "blue"); // Change tooltip color here
+
+        
+
+        
+
+        // Add axis labels
+        svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("transform", `translate(${width / 2},${height + margin.top + 10})`)
+            .text("Gini Index");
+
+        svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("transform", `translate(${-margin.left + 10},${height / 2})rotate(-90)`)
+            .text("GDP (current US$)");
+    }
 
 </script>
 

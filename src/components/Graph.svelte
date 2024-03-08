@@ -4,7 +4,7 @@
     import { scaleLinear } from 'd3-scale';
     import { select } from 'd3-selection';
     export let data;
-    
+   
     
     // Define the Scatter component as a Svelte function
     export function Scatter(filteredCountryName, filteredGiniValues, filteredGdpValues) {
