@@ -1,3 +1,4 @@
+
 <main>
   <!-- svelte-ignore a11y-missing-attribute -->
   <html>
@@ -64,9 +65,49 @@
           <li>GDP measures economic activity well, but fails to provide information on what proportion of the population is involved in said activity.</li>
           <li>The Gini index descrives wealth distribution well, but does not indicate the level of either cumulative or average wealth.</li>
           <li>A more accurate picture can be acquired through looking at both measures.</li>
-        </ul>
+        </ul>  
       </div>
-  
+      <div>
+        <label for="yearSelect">Select Year to Compare:</label>
+        <select id="yearSelect">   
+          <option value="1985" selected>1985</option>
+          <option value="1986">1986</option>
+          <option value="1987">1987</option>
+          <option value="1988">1988</option>
+          <option value="1989">1989</option>
+          <option value="1990">1990</option>
+          <option value="1991">1991</option>
+          <option value="1992">1992</option>
+          <option value="1993">1993</option>
+          <option value="1994">1994</option>
+          <option value="1995">1995</option>
+          <option value="1996">1996</option>
+          <option value="1997">1997</option>
+          <option value="1998">1998</option>
+          <option value="1999">1999</option>
+          <option value="2000">2000</option>
+          <option value="2001">2001</option>
+          <option value="2002">2002</option>
+          <option value="2003">2003</option>
+          <option value="2004">2004</option>
+          <option value="2005">2005</option>
+          <option value="2006">2006</option>
+          <option value="2007">2007</option>
+          <option value="2008">2008</option>
+          <option value="2009">2009</option>
+          <option value="2010">2010</option>
+          <option value="2011">2011</option>
+          <option value="2012">2012</option>
+          <option value="2013">2013</option>
+          <option value="2014">2014</option>
+          <option value="2015">2015</option>
+          <option value="2016">2016</option>
+          <option value="2017">2017</option>
+          <option value="2018">2018</option>
+          <option value="2019">2019</option>
+          <option value="2020">2020</option>
+        </select>
+      </div>
       <div style="display: contents">
         <svg id="scatterplot" width="400" height="300"></svg>
       </div>
@@ -82,7 +123,6 @@
 
     </body>
     </html>
-<Graph {data}/>
 </main>
 
 <script>
@@ -104,8 +144,6 @@
   const marginLeft = 40;
 
   let data = [];
-  let targetYear = "1964";
-  let targetCountryCode = "USA";
 
   onMount(async () => {
       const res = await fetch(
@@ -121,31 +159,10 @@
              gini: +d["gini"]/100,
           };
       });
-      // data = data;
-
-    // Filter data based on the target year and country code
-    const filteredData = data.filter(d => d.year === 2017);    
-
-    // // Extract Gini index (SI.POV.GINI) and GDP (current US$) (NY.GDP.MKTP.CD) values from filtered data
-    // const giniValues = filteredData.filter(d => d.indicator_code === "SI.POV.GINI").map(d => d.value);
-    // const gdpValues = filteredData.filter(d => d.indicator_code === "NY.GDP.MKTP.CD").map(d => d.value);
-    // const country_name = filteredData.filter(d => d.indicator_code === "SI.POV.GINI").map(d => d.country_name); 
-    
-    // const filteredCountryName = [];
-    // const filteredGiniValues = [];
-    // const filteredGdpValues = [];
-    // for (let i = 0; i < giniValues.length; i++) {
-    //     if (giniValues[i] !== 0 && gdpValues[i] !== 0) {
-    //         filteredGiniValues.push(giniValues[i]);
-    //         filteredGdpValues.push(gdpValues[i]);
-    //         filteredCountryName.push(country_name[i]);
-    //     }
-    // }
-
-    console.log(filteredData);
-
-    drawScatter(filteredData);
-    //drawScatter(filteredCountryName, filteredGiniValues, filteredGdpValues);
+    drawScatter(data);
+    document.getElementById('yearSelect').addEventListener('change', function() {
+      drawScatter(data);
+    }); 
   });
 
   let lorenzData = [];
@@ -163,8 +180,6 @@ onMount(async () => {
         income: +d.income
     };
  })
-
- console.log(lorenzData);
 
  drawLorenz(lorenzData);
 
@@ -303,9 +318,14 @@ svg.append("text")
 // tooltip to show 
 
 };
-
 // Define the Scatter component as a Svelte function
 function drawScatter(filteredData) {
+        const initialYear = document.getElementById('yearSelect').value
+        let yearAsInteger = parseInt(initialYear);
+        filteredData = filteredData.filter(d => d.year === yearAsInteger);
+        filteredData = filteredData.filter(d => d.gdp !== 0);   
+        filteredData = filteredData.filter(d => d.gini !== 0);    
+        d3.select("#scatterplot").selectAll("*").remove();
         // Define the SVG dimensions and margins
         const margin = { top: 20, right: 50, bottom: 50, left: 100 };
         const width = 1000 - margin.left - margin.right;
@@ -322,7 +342,6 @@ function drawScatter(filteredData) {
         var xScale = scaleLinear()
             .domain(d3.extent(filteredData, function(d){return d.gini}))
             .range([0, width]);
-        console.log(filteredData.gini)
         // Add x-axis
         svg.append("g")
             .attr("transform", `translate(0,${height})`)
@@ -334,7 +353,7 @@ function drawScatter(filteredData) {
         
         // Add y-axis with custom tick format
         svg.append("g")
-            .call(d3.axisLeft().scale(yScale).tickFormat(d => d / 1e9 + "B"));
+          .call(d3.axisLeft().scale(yScale).tickFormat(d => `$${d3.format(",")(d)}`));
 
         // Plot points with tooltip
         svg.append("g")
@@ -342,17 +361,12 @@ function drawScatter(filteredData) {
             .data(filteredData)
             .enter()
             .append("circle")
-              .attr("cx", function(d){ return xScale(d.gini);})
-              .attr("cy", function(d){ return yScale(d.gdp)})
-              .attr("r", 5) // radius of the circles
-              //.append("title")
-            // .text((d, i) => `Country: ${d}\nGDP: ${(filteredGdpValues[i] / 1e9).toFixed(3)}B\nGini: ${filteredGiniValues[i]}`)
-            // .style("fill", "blue"); // Change tooltip color here
-
-        
-
-        
-
+            .attr("cx", function(d){ return xScale(d.gini);})
+            .attr("cy", function(d){ return yScale(d.gdp)})
+            .attr("r", 5) // radius of the circles
+            .append("title")
+            .append("title")
+            .text(d => `Country: ${d.country}\nGDP: $${d3.format(",.2f")(d.gdp)}\nGini: ${d3.format(",.3f")(d.gini)}`);
         // Add axis labels
         svg.append("text")
             .attr("text-anchor", "middle")
@@ -362,9 +376,14 @@ function drawScatter(filteredData) {
         svg.append("text")
             .attr("text-anchor", "middle")
             .attr("transform", `translate(${-margin.left + 10},${height / 2})rotate(-90)`)
-            .text("GDP (current US$)");
-    }
-
+            .text("GDP Per Capita (current US$)");
+        svg.append("text")
+          .attr("x", width / 2)
+          .attr("y", margin.top / 4)
+          .attr("text-anchor", "middle")
+          .style("font-size", "1.5em")
+          .text("GDP vs Gini");
+  }
 </script>
 
 
