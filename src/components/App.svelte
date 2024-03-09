@@ -67,6 +67,22 @@
           <li>A more accurate picture can be acquired through looking at both measures.</li>
         </ul>  
       </div>
+
+
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+
+
       <div>
         <label for="yearSelect">Select Year to Compare:</label>
         <select id="yearSelect">   
@@ -111,6 +127,19 @@
       <div style="display: contents">
         <svg id="scatterplot" width="400" height="300"></svg>
       </div>
+
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
   
       <div>
         <h2>Demo Writeup</h2>
