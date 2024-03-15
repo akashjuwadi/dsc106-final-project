@@ -508,12 +508,11 @@ function drawScatter(filteredData) {
     }
     h2 {
         font-size: 12pt;
-        padding:20px;
-        text-align:center;
+        padding:20px
     }
     h3 {
         font-size: 12pt;
-        padding:10px;
+        padding:20px
     }
     p {
         font-size: 10pt;
