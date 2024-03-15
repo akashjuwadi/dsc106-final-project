@@ -1,4 +1,3 @@
-
 <main>
   <!-- svelte-ignore a11y-missing-attribute -->
   <html>
@@ -14,6 +13,10 @@
     <body style="margin:100px">
       <h1>Two Methods for Measuring Economic Health</h1>
       <h2>Gross Domestic Product per Capita and the Gini Coefficient</h2>
+
+      <div>
+        <p>As data scientists, it is our responsibility to explore whatever data may apply towards the concept we look to better understand. This means putting our domain knowledge to good use by determining which metrics are sufficient for measuring a particular trait and which can be helpful but only tell a limited part of the story in which we aim to discover. Let's see how this idea applies in the case of the strength of each country's economy!</p>
+      </div>
   
       <div>
         <h3>Gross Domestic Product (GDP)</h3>
@@ -75,6 +78,7 @@
 
 
       <div>
+        <h2>Do these two metrics always agree for each country?</h2>
         <label for="yearSelect">Select Year to Compare:</label>
         <select id="yearSelect">   
           <option value="1985" selected>1985</option>
@@ -119,8 +123,44 @@
         <svg id="scatterplot" width="400" height="300"></svg>
       </div>
 
-      
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
 
+      <div>
+        <p>Notice how weak the correlation between the two metrics is throughout the years?</p>
+        <p>If only one metric was satisfactory for measuring an economy's health, the correlation between the two would be nearly perfect given they would always be "agreeing" on the relative health of each economy when compared to that of another. However, it can be seen that this is not the case given it is fairly common for a country to have a more impressive GDP per capita than another (a greater value along the y-axis) but have a less impressive gini index (a greater value along the x-axis).</p> 
+      </div>
+
+      <div>
+        <p>So why consider both metrics?</p>
+        <ul>
+          <li>GDP measures economic activity well, but fails to provide information on what proportion of the population is involved in said activity.</li>
+          <li>The Gini index descrives wealth distribution well, but does not indicate the level of either cumulative or average wealth.</li>
+          <li>A more accurate picture can be depicted by looking at both measures because each of their pros can be extracted and cons negated.</li>
+        </ul>
+        <p>This economics example is a reminder of why feature selection through the use of EDA is such as important first step of the data science process.</p>
+      </div>
+
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+  
+      <div>
+        <h2>Demo Writeup from 3/1/2024</h2>
+        <h3>What have you done so far?</h3>
+        <p>This demo contains two of our planned visualizations and pulls from two datasets we cleaned. One is a scatterplot that displays the gini index and GDP per capita data for each country for any year chosen by the user. The other is the Lorenz curve which is shaped by user input of the gini index. This demo also contains much of the background information and analysis that will make up the final product's text.</p>
+        <h3>What will be the most challenging of your project to design and why?</h3>
+        <p>The most challenging aspects of finishing the project will be adding more interactive elements to our visualizations without them interfering with how said visualizations are initially displayed. Making these visualizations (and therefore interactive components) aesthetically pleasing without impeding on how effectively they communicate our message will also be challenging due in part to the subjective nature of many of the design decisions that will need to be made. Significant time may also need to be invested into forming more of a storyline that helps viewers explore our topics and better understand the economics-related message we our aiming to convey. Continuing to become familiar with d3.js syntax as well as other technical skills (such as working with GeoJSON data) will also take some time in order to accomplish the previously-mentioned tasks.</p>
+        <h2>Introduction Video from 3/8/2024</h2>
+        <iframe width="800" height="600" src="https://www.youtube.com/embed/Fv5OA3sOYcE"></iframe>
+      </div>
     </body>
     </html>
 </main>
@@ -128,7 +168,6 @@
 <script>
   import * as d3 from 'd3';
   import { onMount } from 'svelte';
-  import Graph from './Graph.svelte';
   import { scaleLinear } from 'd3-scale';
   // import {Legend} from "@d3/color-legend"
 
@@ -143,7 +182,7 @@
 
   onMount(async () => {
       const res = await fetch(
-          '/gdp_gini.csv',
+          'gdp_gini.csv',
       );
       const csv = await res.text();
       data = d3.csvParse(csv, function(d){
@@ -153,6 +192,7 @@
              country_code: d["country_code"],
              gdp: +d["gdp"],
              gini: +d["gini"]/100,
+             region: d["region"],
           };
       });
     drawScatter(data);
@@ -355,6 +395,11 @@ function drawScatter(filteredData) {
           .call(d3.axisLeft().scale(yScale).tickFormat(d => `$${d3.format(",")(d)}`));
 
         // Plot points with tooltip
+        const colorScale = d3.scaleOrdinal()
+        .domain(["NA", "SA", "OC", "AF", "AS", "EU"]) // Continent codes
+        .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"]); // Colors for continents
+
+
         svg.append("g")
             .selectAll("dot")
             .data(filteredData)
@@ -363,14 +408,15 @@ function drawScatter(filteredData) {
             .attr("cx", function(d){ return xScale(d.gini);})
             .attr("cy", function(d){ return yScale(d.gdp)})
             .attr("r", 5) // radius of the circles
-            .append("title")
+            .style("fill", function(d) { return colorScale(d.region); })
             .append("title")
             .text(d => `Country: ${d.country}\nGDP: $${d3.format(",.2f")(d.gdp)}\nGini: ${d3.format(",.3f")(d.gini)}`);
         // Add axis labels
-        svg.append("text")
-            .attr("text-anchor", "middle")
-            .attr("transform", `translate(${width / 2},${height + margin.top + 10})`)
-            .text("Gini Index");
+     // Add axis labels
+     svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", `translate(${width / 2},${height + margin.top + 10})`)
+        .text("Gini Index");
 
         svg.append("text")
             .attr("text-anchor", "middle")
@@ -382,6 +428,35 @@ function drawScatter(filteredData) {
           .attr("text-anchor", "middle")
           .style("font-size", "1.5em")
           .text("GDP vs Gini");
+
+    // Adding Legend
+    const legend = svg.append("g")
+        .attr("class", "legend")
+        .attr("transform", `translate(${width - margin.right - 15},${margin.top+ 20})`);
+
+    const continents = ["North America", "South America", "Oceania", "Africa", "Asia", "Europe"]; 
+
+    legend.selectAll("rect")
+        .data(continents)
+        .enter()
+        .append("rect")
+        .attr("y", function(d, i) { return i * 20; })
+        .attr("width", 10)
+        .attr("height", 10)
+        .style("fill", function(d, i) { return colorScale(["NA", "SA", "OC", "AF", "AS", "EU"][i]); });
+
+    legend.selectAll("text")
+        .data(continents)
+        .enter()
+        .append("text")
+        .attr("x", 15)
+        .attr("y", function(d, i) { return i * 20 + 9; })
+        .text(function(d) { return d; });
+    
+    legend.append("text")
+        .attr("x", 0)
+        .attr("y", -10)
+        .text("Regions");
   }
 
 // var pageX = d3.events.pageX;
@@ -566,3 +641,4 @@ const getColor = (gdp) => {
     
     body {background-color:#DDE6ED;}
 </style>
+
