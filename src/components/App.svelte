@@ -28,6 +28,8 @@
         </ul>
         <p>GDP tends to be the most popular statistic for indicating a nation's wealth given it measures the "monetary value of final goods and services" which is the sum of all consumption, investment, government purchases, and net exports (exports minus imports) over a given period of time.</p>
       </div>
+      
+      
 
       <div id="gdp_choropleth" align="center">
           <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
@@ -47,6 +49,11 @@
         <h3>The Gini Index</h3>
         <p>Economic inequality within a nation can be indicated with the Gini index, a metric derived from the Lorenz curve which is a graph of the population's income distribution. The graph has the percent of the population on the x-axis and the percent of overall income earned by said percent of the population on the y-axis. A line starting from the origin and angled at 45 degrees represents perfect equality because x percent of the population would earn exactly x percent of the income. The area between the Lorenz curve and said straight line is the Gini index, meaning a greater Gini index indicates greater inequality.</p>
       </div>
+      <div>
+        <br>
+        <br>
+        <br>
+      </div>
   
       <div id="lorenzCurve" align="center"><input type="range" name="range" class="slider" id="giniSlider" value="0.1"
         min="0.1" max="0.5" step="0.1">
@@ -54,11 +61,6 @@
         <div id="lorenzInfo">The poorest 50% of the population owns 42% of the wealth.</div>
           <br></div>
       
-      <!-- <input type="range" name="range" class="slider" id="giniSlider" value="0.1"
-      min="0.1" max="0.5" step="0.1" >
-      <span id="giniVal" style="font-size:14px" align="center">Gini Coefficient: 0.1</span>
-      <div id="tooltip" opacity='0' position="absolute" marginTop=200 align="center"></div>
-        <br> -->
   
       <div style="display: contents">
         <svg id="gini_choropleth" width="400" height="300"></svg>
@@ -492,8 +494,7 @@ function drawScatter(filteredData) {
         .text("Regions");
   }
 
-// var pageX = d3.events.pageX;
-// var pageY = d3.events.pageY;
+
 // define GDP choropleth as a Svelte Function
 const drawGDP = async (data) => {
   // dimensions
@@ -513,7 +514,21 @@ const drawGDP = async (data) => {
   // Define path generator
   const path = d3.geoPath().projection(projection);
 
-  // Create tooltip for more info
+  const formatGDP = (code, d) => {
+      if (d.find(entry=>entry.country_code===code)==null){
+        return "No Data"
+      } else {
+        return `${d.find(entry=>entry.country_code===code).gdp.toFixed(2)} USD`
+      }
+          }
+
+  
+  
+  try {
+      // Load world map data
+      const world = await d3.json('http://enjalot.github.io/wwsd/data/world/world-110m.geojson');
+
+      // Tooltip highlight
   const tooltip = d3.select("body").append("div")
       .attr("class", "tooltip")
       .style("opacity", 0);
@@ -529,6 +544,8 @@ const drawGDP = async (data) => {
           .duration(200)
           .style("opacity", 1)
           .style("stroke", "black");
+        
+         //testing
       }
 
       let mouseLeave = function() {
@@ -537,11 +554,8 @@ const drawGDP = async (data) => {
           .duration(200)
           .style("opacity", 1)
           .style("stroke", "transparent");
+      
       }
-  
-  try {
-      // Load world map data
-      const world = await d3.json('http://enjalot.github.io/wwsd/data/world/world-110m.geojson');
 
       // Draw map paths
       svg.selectAll('path')
@@ -554,8 +568,12 @@ const drawGDP = async (data) => {
               return countryData ? getColor(countryData.gdp) : 'gray'; // Color countries based on GDP
           })
           .on("mouseover", mouseOver)
-		      .on("mouseleave", mouseLeave);
+		      .on("mouseleave", mouseLeave)
+          .append("title")
+            .text(function(d) { return `${d.properties.name} \nGDP Per Capita: $${formatGDP(d.id, data)}`});// how do i append gdp ;-;
 
+            //console.log(data.find(entry=>entry.country_code==="USA").gdp)
+          
 
       // Add slider
       const slider = d3.select('#gdp_choropleth').append('input')
@@ -578,9 +596,11 @@ const drawGDP = async (data) => {
                   })
                   .on("mouseover", mouseOver)
 		              .on("mouseleave", mouseLeave)
-                  .append("title")
-                    .text(function(d){return `${d.properties.name} \nGDP: ${countryData.gdp}`});
+              svg.selectAll('title').text(function(d) { return `${d.properties.name} \nGDP Per Capita: $${formatGDP(d.id, filteredData)}`});
           });
+          
+        
+
   } catch (error) {
       console.error('Error loading world map data:', error);
   }
@@ -667,7 +687,7 @@ const getColor = (gdp) => {
     p {
         font-size: 10pt;
         padding:10px;
-        text-align:center;
+        text-align:left;
     }
     div.center {
       text-align: center;
@@ -679,10 +699,11 @@ const getColor = (gdp) => {
     li {
       text-indent:5px;
       margin:25px;
-      text-align:center;
+      text-align:left;
     }
     li::before { 
       content: '• '; 
+      text-align:left;
     } 
     
     body {background-color:#DDE6ED;}
