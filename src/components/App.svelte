@@ -196,6 +196,7 @@
              country_code: d["country_code"],
              gdp: +d["gdp"],
              gini: +d["gini"]/100,
+             region: d["region"],
           };
       });
     drawScatter(data);
@@ -395,6 +396,11 @@ function drawScatter(filteredData) {
           .call(d3.axisLeft().scale(yScale).tickFormat(d => `$${d3.format(",")(d)}`));
 
         // Plot points with tooltip
+        const colorScale = d3.scaleOrdinal()
+        .domain(["NA", "SA", "OC", "AF", "AS", "EU"]) // Continent codes
+        .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"]); // Colors for continents
+
+
         svg.append("g")
             .selectAll("dot")
             .data(filteredData)
@@ -403,25 +409,56 @@ function drawScatter(filteredData) {
             .attr("cx", function(d){ return xScale(d.gini);})
             .attr("cy", function(d){ return yScale(d.gdp)})
             .attr("r", 5) // radius of the circles
-            .append("title")
+            .style("fill", function(d) { return colorScale(d.region); })
             .append("title")
             .text(d => `Country: ${d.country}\nGDP: $${d3.format(",.2f")(d.gdp)}\nGini: ${d3.format(",.3f")(d.gini)}`);
         // Add axis labels
-        svg.append("text")
-            .attr("text-anchor", "middle")
-            .attr("transform", `translate(${width / 2},${height + margin.top + 10})`)
-            .text("Gini Index");
+     // Add axis labels
+     svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", `translate(${width / 2},${height + margin.top + 10})`)
+        .text("Gini Index");
 
-        svg.append("text")
-            .attr("text-anchor", "middle")
-            .attr("transform", `translate(${-margin.left + 10},${height / 2})rotate(-90)`)
-            .text("GDP Per Capita (current US$)");
-        svg.append("text")
-          .attr("x", width / 2)
-          .attr("y", margin.top / 4)
-          .attr("text-anchor", "middle")
-          .style("font-size", "1.5em")
-          .text("GDP vs Gini");
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", `translate(${-margin.left + 10},${height / 2})rotate(-90)`)
+        .text("GDP Per Capita (current US$)");
+
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", margin.top / 4)
+        .attr("text-anchor", "middle")
+        .style("font-size", "1.5em")
+        .text("GDP vs Gini");
+
+    // Adding Legend
+    const legend = svg.append("g")
+        .attr("class", "legend")
+        .attr("transform", `translate(${width - margin.right - 15},${margin.top+ 20})`);
+
+    const continents = ["North America", "South America", "Oceania", "Africa", "Asia", "Europe"]; 
+
+    legend.selectAll("rect")
+        .data(continents)
+        .enter()
+        .append("rect")
+        .attr("y", function(d, i) { return i * 20; })
+        .attr("width", 10)
+        .attr("height", 10)
+        .style("fill", function(d, i) { return colorScale(["NA", "SA", "OC", "AF", "AS", "EU"][i]); });
+
+    legend.selectAll("text")
+        .data(continents)
+        .enter()
+        .append("text")
+        .attr("x", 15)
+        .attr("y", function(d, i) { return i * 20 + 9; })
+        .text(function(d) { return d; });
+    
+    legend.append("text")
+        .attr("x", 0)
+        .attr("y", -10)
+        .text("Regions");
   }
 </script>
 
