@@ -199,7 +199,6 @@
              region: d["region"],
           };
       });
-    drawScatter(data);
     document.getElementById('yearSelect').addEventListener('change', function() {
       drawScatter(data);
     }); 
