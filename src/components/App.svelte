@@ -1,6 +1,9 @@
 <main>
   <!-- svelte-ignore a11y-missing-attribute -->
   <html>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  
     <head>
       
       <title>DSC 106 Final Group Project</title>
@@ -25,6 +28,14 @@
         </ul>
         <p>GDP tends to be the most popular statistic for indicating a nation's wealth given it measures the "monetary value of final goods and services" which is the sum of all consumption, investment, government purchases, and net exports (exports minus imports) over a given period of time.</p>
       </div>
+
+      <div id="gdp_choropleth" align="center">
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+          <br>
+          <span id="mapYear" style="font-size:14px" align="right">Year: 1900</span>
+          <!-- change year in legend instead -->
+        </div>
+          
   
       <div>
         <h3>Why could GDP possibly be flawed?</h3>
@@ -48,18 +59,22 @@
       <span id="giniVal" style="font-size:14px" align="center">Gini Coefficient: 0.1</span>
       <div id="tooltip" opacity='0' position="absolute" marginTop=200 align="center"></div>
         <br> -->
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
+  
+      <div style="display: contents">
+        <svg id="gini_choropleth" width="400" height="300"></svg>
+        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+        <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+      </div>
+  
+      <div>
+        <p>Comparing the Two Measurements:</p>
+        <ul>
+          <li>There are pros and cons to using each of the measurements.</li>
+          <li>GDP measures economic activity well, but fails to provide information on what proportion of the population is involved in said activity.</li>
+          <li>The Gini index descrives wealth distribution well, but does not indicate the level of either cumulative or average wealth.</li>
+          <li>A more accurate picture can be acquired through looking at both measures.</li>
+        </ul>  
+      </div>
 
 
       <div>
@@ -163,10 +178,7 @@
   import * as d3 from 'd3';
   import { onMount } from 'svelte';
   import { scaleLinear } from 'd3-scale';
-  //import ChoroplethGDP from './Choropleth-GDP.svelte';
-  //import gdpData from './data.json';
-  //import ChoroplethGini from './Choropleth-Gini.svelte';
-  //import giniData from './data.json';
+  // import {Legend} from "@d3/color-legend"
 
   const width = 928;
   const height = 500;
@@ -195,7 +207,10 @@
     drawScatter(data);
     document.getElementById('yearSelect').addEventListener('change', function() {
       drawScatter(data);
-    }); 
+    });
+    
+    drawGDP(data);
+    
   });
 
   let lorenzData = [];
@@ -438,17 +453,16 @@ function drawScatter(filteredData) {
         .attr("transform", `translate(${width / 2},${height + margin.top + 10})`)
         .text("Gini Index");
 
-    svg.append("text")
-        .attr("text-anchor", "middle")
-        .attr("transform", `translate(${-margin.left + 10},${height / 2})rotate(-90)`)
-        .text("GDP Per Capita (current US$)");
-
-    svg.append("text")
-        .attr("x", width / 2)
-        .attr("y", margin.top / 4)
-        .attr("text-anchor", "middle")
-        .style("font-size", "1.5em")
-        .text("GDP vs Gini");
+        svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("transform", `translate(${-margin.left + 10},${height / 2})rotate(-90)`)
+            .text("GDP Per Capita (current US$)");
+        svg.append("text")
+          .attr("x", width / 2)
+          .attr("y", margin.top / 4)
+          .attr("text-anchor", "middle")
+          .style("font-size", "1.5em")
+          .text("GDP vs Gini");
 
     // Adding Legend
     const legend = svg.append("g")
@@ -479,7 +493,114 @@ function drawScatter(filteredData) {
         .attr("y", -10)
         .text("Regions");
   }
+
+// var pageX = d3.events.pageX;
+// var pageY = d3.events.pageY;
+// define GDP choropleth as a Svelte Function
+const drawGDP = async (data) => {
+  // dimensions
+  const width = 800
+  const height = 800;
+
+  // Append SVG 
+  const svg = d3.select('#gdp_choropleth').append('svg') 
+      .attr('width', width)
+      .attr('height', height);
+
+  // Define projection
+  const projection = d3.geoMercator()
+      .scale(130)
+      .translate([width / 2, height / 1.5]);
+
+  // Define path generator
+  const path = d3.geoPath().projection(projection);
+
+  // Create tooltip for more info
+  const tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
+      let mouseOver = function(d) {
+        d3.selectAll("path")
+          .transition()
+          .duration(200)
+          .style("opacity", .5)
+          .style("stroke", "transparent");
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .style("opacity", 1)
+          .style("stroke", "black");
+      }
+
+      let mouseLeave = function() {
+        d3.selectAll("path")
+          .transition()
+          .duration(200)
+          .style("opacity", 1)
+          .style("stroke", "transparent");
+      }
+  
+  try {
+      // Load world map data
+      const world = await d3.json('http://enjalot.github.io/wwsd/data/world/world-110m.geojson');
+
+      // Draw map paths
+      svg.selectAll('path')
+          .data(world.features)
+          .enter().append('path')
+          .attr('d', path)
+          .attr('fill', d => {
+              // Get GDP data for each country
+              const countryData = data.find(entry => entry.country_code === d.id);
+              return countryData ? getColor(countryData.gdp) : 'gray'; // Color countries based on GDP
+          })
+          .on("mouseover", mouseOver)
+		      .on("mouseleave", mouseLeave);
+
+
+      // Add slider
+      const slider = d3.select('#gdp_choropleth').append('input')
+          .attr('type', 'range')
+          .attr('min', d3.min(data, d => d.year))
+          .attr('max', d3.max(data, d => d.year))
+          .attr('step', 1)
+          .on('input', function() {
+              // Update map based on selected year
+              const selectedYear = +this.value;
+              const filteredData = data.filter(d => d.year === selectedYear);
+
+              document.getElementById("mapYear").textContent=`Year: ${selectedYear}`;
+              
+              svg.selectAll('path')
+                  .data(world.features)
+                  .attr('fill', d => {
+                      const countryData = filteredData.find(entry => entry.country_code === d.id);
+                      return countryData ? getColor(countryData.gdp) : 'gray';
+                  })
+                  .on("mouseover", mouseOver)
+		              .on("mouseleave", mouseLeave)
+                  .append("title")
+                    .text(function(d){return `${d.properties.name} \nGDP: ${countryData.gdp}`});
+          });
+  } catch (error) {
+      console.error('Error loading world map data:', error);
+  }
+}
+
+// Function to get color based on GDP value
+const getColor = (gdp) => {
+    // Define color scale
+    const colorScale = d3.scaleLinear()
+        .domain(d3.extent(data, function(d){return d.gdp})) // Adjust domain based on GDP range
+        .range(['lightblue', 'darkblue']);
+
+    // Return color based on GDP value
+    return colorScale(gdp);
+};
+
 </script>
+
 
 
 
@@ -490,7 +611,7 @@ function drawScatter(filteredData) {
     @import
     url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap");
   /* Write your CSS here */
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&display=swap');
 
   :root {
     --color-bg: #ffffff;
@@ -517,6 +638,17 @@ function drawScatter(filteredData) {
         font-size:12px;
         line-height: 1.8em;
     }
+
+    /* div.tooltip {   
+      position: absolute;
+      padding: 7px;
+      font-size: 0.8em;
+      pointer-events: none;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.25);
+    }   */
 
     h1 {
         font-family:'League Spartan', sans-serif;
