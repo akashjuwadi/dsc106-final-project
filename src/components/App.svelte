@@ -170,7 +170,7 @@
 
   onMount(async () => {
       const res = await fetch(
-          '/gdp_gini.csv',
+          'gdp_gini.csv',
       );
       const csv = await res.text();
       data = d3.csvParse(csv, function(d){
