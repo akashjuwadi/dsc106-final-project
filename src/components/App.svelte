@@ -26,12 +26,6 @@
         </ul>
         <p>GDP tends to be the most popular statistic for indicating a nation's wealth given it measures the "monetary value of final goods and services" which is the sum of all consumption, investment, government purchases, and net exports (exports minus imports) over a given period of time.</p>
       </div>
-
-      <div style="display: contents">
-        <svg id="gdp_choropleth" width="400" height="300"></svg>
-        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-        <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
-      </div>
   
       <div>
         <h3>Why could GDP possibly be flawed?</h3>
