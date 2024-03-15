@@ -15,7 +15,7 @@
       <h2>Gross Domestic Product per Capita and the Gini Coefficient</h2>
 
       <div>
-        <p>As data scientists, it is our responsibility to explore whatever data may apply towards the concept we look to better understand. This means putting our domain knowledge to good use by determining which metrics are sufficient for measuring a particular trait and which can be helpful but only tell a limited part of the story in which we aim to discover. Let's see how this idea applies in the case of the strength of each country's economy!</p>
+        <p>As data scientists, it is our responsibility to explore whatever data may apply towards the concept we look to better understand. This means putting our domain knowledge to good use by determining which metrics are sufficient for measuring a particular trait and which can be helpful yet only tell a limited part of the story in which we aim to discover. Let's see how this idea applies in the case of the strength of each country's economy!</p>
       </div>
   
       <div>
@@ -45,11 +45,11 @@
           <li>A high GDP per capita may also not indicate that all of the nation's people are benefitting much from the total wealth due to how it's distributed across the population.</li>
         </ul>
         <h3>The Gini Index</h3>
-        <p>Economic inequality within a nation can be indicated with the Gini index which is derived from the Lorenz curve, a graph of the population's income distribution. The graph has the percent of the population on the x-axis and the proportion of overall income earned by said percent of the population on the y-axis. A line angled at 45 degrees (therefore having a slope of 1) represents perfect equality (so that half of the population earns exactly half of the income for example) an the Gini index is the area between the Lorenz curve and said line at 45 degrees, meaning a greater Gini index indicates greater inequality.</p>
+        <p>Economic inequality within a nation can be indicated with the Gini index, a metric derived from the Lorenz curve which is a graph of the population's income distribution. The graph has the percent of the population on the x-axis and the percent of overall income earned by said percent of the population on the y-axis. A line starting from the origin and angled at 45 degrees represents perfect equality because x percent of the population would earn exactly x percent of the income. The area between the Lorenz curve and said straight line is the Gini index, meaning a greater Gini index indicates greater inequality.</p>
       </div>
   
       <div id="lorenzCurve" align="center"><input type="range" name="range" class="slider" id="giniSlider" value="0.1"
-        min="0.1" max="0.5" step="0.1" >
+        min="0.1" max="0.5" step="0.1">
         <span id="giniVal" style="font-size:14px" align="center">Gini Coefficient: 0.1</span>
         <div id="lorenzInfo">The poorest 50% of the population owns 42% of the wealth.</div>
           <br></div>
@@ -131,18 +131,22 @@
       <br>
 
       <div>
-        <p>Notice how weak the correlation between the two metrics is throughout the years?</p>
+        <h2>Notice how weak the correlation between the two metrics is throughout the years?</h2>
         <p>If only one metric was satisfactory for measuring an economy's health, the correlation between the two would be nearly perfect given they would always be "agreeing" on the relative health of each economy when compared to that of another. However, it can be seen that this is not the case given it is fairly common for a country to have a more impressive GDP per capita than another (a greater value along the y-axis) but have a less impressive gini index (a greater value along the x-axis).</p> 
       </div>
 
+      <br>
+      <br>
+      <br>
+
       <div>
-        <p>So why consider both metrics?</p>
+        <h2>So why consider both metrics?</h2>
         <ul>
           <li>GDP measures economic activity well, but fails to provide information on what proportion of the population is involved in said activity.</li>
           <li>The Gini index descrives wealth distribution well, but does not indicate the level of either cumulative or average wealth.</li>
           <li>A more accurate picture can be depicted by looking at both measures because each of their pros can be extracted and cons negated.</li>
         </ul>
-        <p>This economics example is a reminder of why feature selection through the use of EDA is such as important first step of the data science process.</p>
+        <p>This economics example is a reminder of why careful feature selection through the use of exploratory data analysis (EDA) is such as important first step of the data science process.</p>
       </div>
 
       <br>
@@ -159,6 +163,9 @@
         <h3>What will be the most challenging of your project to design and why?</h3>
         <p>The most challenging aspects of finishing the project will be adding more interactive elements to our visualizations without them interfering with how said visualizations are initially displayed. Making these visualizations (and therefore interactive components) aesthetically pleasing without impeding on how effectively they communicate our message will also be challenging due in part to the subjective nature of many of the design decisions that will need to be made. Significant time may also need to be invested into forming more of a storyline that helps viewers explore our topics and better understand the economics-related message we our aiming to convey. Continuing to become familiar with d3.js syntax as well as other technical skills (such as working with GeoJSON data) will also take some time in order to accomplish the previously-mentioned tasks.</p>
         <h2>Introduction Video from 3/8/2024</h2>
+      </div>
+
+      <div class="center">
         <iframe width="800" height="600" src="https://www.youtube.com/embed/Fv5OA3sOYcE"></iframe>
       </div>
     </body>
@@ -399,6 +406,32 @@ function drawScatter(filteredData) {
         .domain(["NA", "SA", "OC", "AF", "AS", "EU"]) // Continent codes
         .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"]); // Colors for continents
 
+        //var tooltip = d3.select("#scatterplot")
+        //.append("div")
+        //.style("opacity", 0)
+        //.attr("class", "tooltip")
+        //.style("background-color", "white")
+        //.style("border", "solid")
+        //.style("border-width", "1px")
+        //.style("border-radius", "5px")
+        //.style("padding", "10px")
+
+        //var mouseover = function(d) {
+          //tooltip.style("opacity", 1)
+        //}
+        
+        //var mousemove = function(d) {
+          //tooltip.html(d.country + " has a gdp per capita of " + d.gdp + "<br>and a Gini index of " + d.gini)
+          //.style("left", (d3.mouse(this)[0]+90) + "px")
+          //.style("top", (d3.mouse(this)[1]) + "px")
+        //}
+
+        //var mouseleave = function(d) {
+          //tooltip.transition()
+          //.duration(200)
+          //.style("opacity", 0)
+        //}
+
 
         svg.append("g")
             .selectAll("dot")
@@ -406,7 +439,7 @@ function drawScatter(filteredData) {
             .enter()
             .append("circle")
             .attr("cx", function(d){ return xScale(d.gini);})
-            .attr("cy", function(d){ return yScale(d.gdp)})
+            .attr("cy", function(d){ return yScale(d.gdp);})
             .attr("r", 5) // radius of the circles
             .style("fill", function(d) { return colorScale(d.region); })
             .append("title")
@@ -602,7 +635,6 @@ const getColor = (gdp) => {
         font-family:'Libre Baskerville', serif;
         font-size:12px;
         line-height: 1.8em;
-        
     }
 
     /* div.tooltip {   
@@ -624,20 +656,34 @@ const getColor = (gdp) => {
     }
     h2 {
         font-size: 12pt;
-        padding:20px
+        padding:20px;
+        text-align:center;
     }
     h3 {
         font-size: 12pt;
-        padding:20px
+        padding:20px;
+        text-align:center;
     }
     p {
         font-size: 10pt;
         padding:10px;
+        text-align:center;
+    }
+    div.center {
+      text-align: center;
+    }
+    ul { 
+      list-style-type: none; 
+      padding: 0; 
     }
     li {
       text-indent:5px;
       margin:25px;
+      text-align:center;
     }
+    li::before { 
+      content: '• '; 
+    } 
     
     body {background-color:#DDE6ED;}
 </style>
