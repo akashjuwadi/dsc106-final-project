@@ -55,12 +55,6 @@
       <span id="giniVal" style="font-size:14px" align="center">Gini Coefficient: 0.1</span>
       <div id="tooltip" opacity='0' position="absolute" marginTop=200 align="center"></div>
         <br> -->
-  
-      <div style="display: contents">
-        <svg id="gini_choropleth" width="400" height="300"></svg>
-        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-        <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
-      </div>
 
       <br>
       <br>
@@ -199,6 +193,7 @@
              region: d["region"],
           };
       });
+    drawScatter(data);
     document.getElementById('yearSelect').addEventListener('change', function() {
       drawScatter(data);
     }); 
