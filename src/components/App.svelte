@@ -1,4 +1,3 @@
-
 <main>
   <!-- svelte-ignore a11y-missing-attribute -->
   <html>
@@ -154,6 +153,7 @@
 <script>
   import * as d3 from 'd3';
   import { onMount } from 'svelte';
+  import { scaleLinear } from 'd3-scale';
   //import ChoroplethGDP from './Choropleth-GDP.svelte';
   //import gdpData from './data.json';
   //import ChoroplethGini from './Choropleth-Gini.svelte';
@@ -509,3 +509,4 @@ function drawScatter(filteredData) {
     
     body {background-color:#DDE6ED;}
 </style>
+
