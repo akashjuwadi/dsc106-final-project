@@ -117,6 +117,8 @@
 
       <div>
         <h2>Notice how weak the correlation between the two metrics is throughout the years?</h2>
+        <p>In 2020, the United States had a superior gdp per capita value than 27 of 29 European nations yet had a worse Gini index than all but one of them. How can that be?</p>
+        <br>
         <p>If only one metric was satisfactory for measuring an economy's health, the correlation between the two would be nearly perfect given they would always be "agreeing" on the relative health of each economy when compared to that of another. However, it can be seen that this is not the case given it is fairly common for a country to have a more impressive GDP per capita than another (a greater value along the y-axis) but have a less impressive gini index (a greater value along the x-axis).</p> 
       </div>
 
