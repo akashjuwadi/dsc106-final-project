@@ -2,21 +2,18 @@
   <!-- svelte-ignore a11y-missing-attribute -->
   <html>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <head>
+      <title>DSC 106 Final Group Project</title>
+    </head>
     
     <div class="div-1">
-      <head>
-        <title>DSC 106 Final Group Project</title>
-      </head>
-    </div>
-
-    <div class="div-2">
         <h1>Two Methods for Measuring Economic Health</h1>
         <h2>Gross Domestic Product per Capita and the Gini Coefficient</h2>
-
         <div>
           <p>As data scientists, it is our responsibility to explore whatever data may apply towards the concept we look to better understand. This means putting our domain knowledge to good use by determining which metrics are sufficient for measuring a particular trait and which can be helpful yet only tell a limited part of the story in which we aim to discover. Let's see how this idea applies in the case of the strength of each country's economy!</p>
         </div>
-  
+    </div>
+    <div class="div-2">
         <div>
           <h3>Gross Domestic Product (GDP)</h3>
           <p>There are many ways to measure the strength of a country's economy such as:</p>
@@ -730,7 +727,7 @@ const getColor = (gdp) => {
       text-align:left;
     } 
     .div-1 {
-      background-color: #dde6ed;
+      background-color: #DDE6ED;
     }
     .div-2 {
     	background-color: #BDCCD6;
