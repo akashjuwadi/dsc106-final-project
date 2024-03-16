@@ -2,42 +2,42 @@
   <!-- svelte-ignore a11y-missing-attribute -->
   <html>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <div class="div-1">
+      <head>
+        <title>DSC 106 Final Group Project</title>
+      </head>
+    </div>
 
-  
-    <head>
-      
-      <title>DSC 106 Final Group Project</title>
-      
-    </head>
+    <div class="div-2">
+        <h1>Two Methods for Measuring Economic Health</h1>
+        <h2>Gross Domestic Product per Capita and the Gini Coefficient</h2>
 
-    <body style="margin:200px">
-      <h1>Two Methods for Measuring Economic Health</h1>
-      <h2>Gross Domestic Product per Capita and the Gini Coefficient</h2>
+        <div>
+          <p>As data scientists, it is our responsibility to explore whatever data may apply towards the concept we look to better understand. This means putting our domain knowledge to good use by determining which metrics are sufficient for measuring a particular trait and which can be helpful yet only tell a limited part of the story in which we aim to discover. Let's see how this idea applies in the case of the strength of each country's economy!</p>
+        </div>
+  
+        <div>
+          <h3>Gross Domestic Product (GDP)</h3>
+          <p>There are many ways to measure the strength of a country's economy such as:</p>
+          <ul>
+            <li>Trade (imports and exports)</li>
+            <li>Labor force participation (employed, unemployed, and not in the labor force)</li>
+            <li>Income</li>
+          </ul>
+          <p>GDP tends to be the most popular statistic for indicating a nation's wealth given it measures the "monetary value of final goods and services" which is the sum of all consumption, investment, government purchases, and net exports (exports minus imports) over a given period of time.</p>
+        </div>
+      
+      
+        <h2>GDP Per Capita Globally</h2>
+        <div id="gdp_choropleth" align="center">
+          <span id="mapYear" style="font-size:14px" align="right">Year: 1960</span>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+            <br>
+        </div>
+    </div>
 
-      <div>
-        <p>As data scientists, it is our responsibility to explore whatever data may apply towards the concept we look to better understand. This means putting our domain knowledge to good use by determining which metrics are sufficient for measuring a particular trait and which can be helpful yet only tell a limited part of the story in which we aim to discover. Let's see how this idea applies in the case of the strength of each country's economy!</p>
-      </div>
-  
-      <div>
-        <h3>Gross Domestic Product (GDP)</h3>
-        <p>There are many ways to measure the strength of a country's economy such as:</p>
-        <ul>
-          <li>Trade (imports and exports)</li>
-          <li>Labor force participation (employed, unemployed, and not in the labor force)</li>
-          <li>Income</li>
-        </ul>
-        <p>GDP tends to be the most popular statistic for indicating a nation's wealth given it measures the "monetary value of final goods and services" which is the sum of all consumption, investment, government purchases, and net exports (exports minus imports) over a given period of time.</p>
-      </div>
-      
-      
-      <h2>GDP Per Capita Globally</h2>
-      <div id="gdp_choropleth" align="center">
-        <span id="mapYear" style="font-size:14px" align="right">Year: 1960</span>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
-          <br>
-      </div>
-          
-  
+    <div class="div-3">
       <div>
         <h3>Why could GDP possibly be flawed?</h3>
         <p>GDP doesn't give a full picture of how economic prosperity is distributed given:</p>
@@ -66,7 +66,9 @@
         <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
         <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
       </div>
-  
+    </div>
+
+    <div class="div-4">
       <div>
         <p>Comparing the Two Measurements:</p>
         <ul>
@@ -122,26 +124,25 @@
       </div>
       <div style="display: contents">
         <svg id="scatterplot" width="400" height="300"></svg>
-      </div>
 
       <br>
       <br>
       <br>
       <br>
       <br>
-      <br>
-
+      <br> 
       <div>
         <h2>Notice how weak the correlation between the two metrics is throughout the years?</h2>
         <p>In 2020, the United States had a superior gdp per capita value than 27 of 29 European nations yet had a worse Gini index than all but one of them. How can that be?</p>
         <br>
         <p>If only one metric was satisfactory for measuring an economy's health, the correlation between the two would be nearly perfect given they would always be "agreeing" on the relative health of each economy when compared to that of another. However, it can be seen that this is not the case given it is fairly common for a country to have a more impressive GDP per capita than another (a greater value along the y-axis) but have a less impressive gini index (a greater value along the x-axis).</p> 
       </div>
-
+    </div>
       <br>
       <br>
       <br>
 
+    <div class="div-5">
       <div>
         <h2>So why consider both metrics?</h2>
         <ul>
@@ -164,7 +165,7 @@
       <div class="center">
         <iframe width="800" height="600" src="https://www.youtube.com/embed/Fv5OA3sOYcE"></iframe>
       </div>
-    </body>
+    </div>
     </html>
 </main>
 
@@ -728,7 +729,20 @@ const getColor = (gdp) => {
       content: '• '; 
       text-align:left;
     } 
-    
-    body {background-color:#DDE6ED;}
+    .div-1 {
+      background-color: #dde6ed;
+    }
+    .div-2 {
+    	background-color: #BDCCD6;
+    }
+    .div-3 {
+    	background-color: #9DB2BF;
+    }
+    .div-4 {
+      background-color: #7890A1;
+    }
+    .div-5 {
+    	background-color: #526D82;
+    }
 </style>
 
