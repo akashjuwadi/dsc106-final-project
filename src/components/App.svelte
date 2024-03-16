@@ -5,28 +5,36 @@
     <head>
       <title>DSC 106 Final Group Project</title>
     </head>
-    
+    <body style="background-color:#DDE6ED">
     <div class="div-1">
-        <h1>Two Methods for Measuring Economic Health</h1>
-        <h2>Gross Domestic Product per Capita and the Gini Coefficient</h2>
-        <div>
-          <p>As data scientists, it is our responsibility to explore whatever data may apply towards the concept we look to better understand. This means putting our domain knowledge to good use by determining which metrics are sufficient for measuring a particular trait and which can be helpful yet only tell a limited part of the story in which we aim to discover. Let's see how this idea applies in the case of the strength of each country's economy!</p>
-        </div>
+        <h1>Measuring Economic Health</h1>
+        <h2 style="padding:0px">Gross Domestic Product per Capita and the Gini Coefficient</h2>
+          <p>
+            As data scientists, we apply our domain knowledge to pinpoint relevant data sources, ensuring alignment with the intended message. 
+            This expertise guides our selection process, leading to more accurate and impactful insights. 
+            By leveraging both domain understanding and data exploration techniques, we can effectively communicate findings that resonate with our audience.
+            Let's see how this idea applies in the case of explaining the strength of a country's economy!</p>
     </div>
     <div class="div-2">
-        <div>
+        
           <h3>Gross Domestic Product (GDP)</h3>
-          <p>There are many ways to measure the strength of a country's economy such as:</p>
+          <p>There are many factors which lend to the strength of a country's economy, such as:</p>
           <ul>
             <li>Trade (imports and exports)</li>
             <li>Labor force participation (employed, unemployed, and not in the labor force)</li>
             <li>Income</li>
           </ul>
-          <p>GDP tends to be the most popular statistic for indicating a nation's wealth given it measures the "monetary value of final goods and services" which is the sum of all consumption, investment, government purchases, and net exports (exports minus imports) over a given period of time.</p>
-        </div>
+          <p>GDP tends to be the most popular statistic for indicating a nation's 
+            wealth because it measures the monetary value of final goods and services. That is, it measures the sum of all 
+            consumption, investment, government purchases, and net exports (exports minus imports) over a given period of time.
+
+            
+            Explore how GDP differs across countries in the below visualization.
+          
+          </p>
       
       
-        <h2>GDP Per Capita Globally</h2>
+        <h3>GDP Per Capita Globally</h3>
         <div id="gdp_choropleth" align="center">
           <span id="mapYear" style="font-size:14px" align="right">Year: 1960</span>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
@@ -35,27 +43,23 @@
     </div>
 
     <div class="div-3">
-      <div>
         <h3>Why could GDP possibly be flawed?</h3>
-        <p>GDP doesn't give a full picture of how economic prosperity is distributed given:</p>
+        <p>GDP doesn't give a full picture of how economic prosperity is distributed because:</p>
         <ul>
-          <li>Large countries may have greater GDPs due to simply having a large population, leading many to prefer using GDP per capita.</li>
+          <li>Large countries may have greater GDPs simply because they have a large population. leading many to prefer using GDP per capita.</li>
           <li>A high GDP per capita may also not indicate that all of the nation's people are benefitting much from the total wealth due to how it's distributed across the population.</li>
         </ul>
         <h3>The Gini Index</h3>
         <p>Economic inequality within a nation can be indicated with the Gini index, a metric derived from the Lorenz curve which is a graph of the population's income distribution. The graph has the percent of the population on the x-axis and the percent of overall income earned by said percent of the population on the y-axis. A line starting from the origin and angled at 45 degrees represents perfect equality because x percent of the population would earn exactly x percent of the income. The area between the Lorenz curve and said straight line is the Gini index, meaning a greater Gini index indicates greater inequality.</p>
-      </div>
-      <div>
-        <br>
-        <br>
-        <br>
-      </div>
   
       <div id="lorenzCurve" align="center"><input type="range" name="range" class="slider" id="giniSlider" value="0.1"
         min="0.1" max="0.5" step="0.1">
         <span id="giniVal" style="font-size:14px" align="center">Gini Coefficient: 0.1</span>
         <div id="lorenzInfo">The poorest 50% of the population owns 42% of the wealth.</div>
-          <br></div>
+          <br>
+        </div>
+        <br>
+        <br>
   
       
 
@@ -72,7 +76,7 @@
 
 
       <div>
-        <h2>Do these two metrics always agree for each country?</h2>
+        <h3>Do these two metrics always agree for each country?</h3>
         <label for="yearSelect">Select Year to Compare:</label>
         <select id="yearSelect">   
           <option value="1985" selected>1985</option>
@@ -113,17 +117,14 @@
           <option value="2020">2020</option>
         </select>
       </div>
-      <div>
+      <div class='center'>
         <svg id="scatterplot" width="400" height="300"></svg>
 
       <br>
       <br>
-      <br>
-      <br>
-      <br>
-      <br> 
+ 
       <div>
-        <h2>Notice how weak the correlation between the two metrics is throughout the years?</h2>
+        <h3>Notice how weak the correlation between the two metrics is throughout the years?</h3>
         <p>In 2020, the United States had a superior gdp per capita value than 27 of 29 European nations yet had a worse Gini index than all but one of them. How can that be?</p>
         <br>
         <p>If only one metric was satisfactory for measuring an economy's health, the correlation between the two would be nearly perfect given they would always be "agreeing" on the relative health of each economy when compared to that of another. However, it can be seen that this is not the case given it is fairly common for a country to have a more impressive GDP per capita than another (a greater value along the y-axis) but have a less impressive gini index (a greater value along the x-axis).</p> 
@@ -135,7 +136,7 @@
 
     <div class="div-5">
       <div>
-        <h2>So why consider both metrics?</h2>
+        <h3>So why consider both metrics?</h3>
         <ul>
           <li>GDP measures economic activity well, but fails to provide information on what proportion of the population is involved in said activity.</li>
           <li>The Gini index descrives wealth distribution well, but does not indicate the level of either cumulative or average wealth.</li>
@@ -157,6 +158,7 @@
         <iframe width="800" height="600" src="https://www.youtube.com/embed/Fv5OA3sOYcE"></iframe>
       </div>
     </div>
+  </body>
     </html>
 </main>
 
@@ -637,13 +639,13 @@ const getColor = (gdp) => {
     --color-shadow-1: hsl(0, 0%, 96%);
   }
 
-  *,
+  /* *,
   *::before,
   *::after {
-    margin: 0;
-    padding: 0;
+    margin: 10px;
+    padding: 10px;
     box-sizing: border-box;
-  }
+  } */
 
 
     main {
@@ -651,42 +653,33 @@ const getColor = (gdp) => {
         color: #27323F;
         font-family:'Libre Baskerville', serif;
         font-size:12px;
-        line-height: 1.8em;
+        line-height: 1.5;
+        background-color:  #DDE6ED;
+        padding: 40px;
     }
-
-    /* div.tooltip {   
-      position: absolute;
-      padding: 7px;
-      font-size: 0.8em;
-      pointer-events: none;
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.25);
-    }   */
-
-    
 
     
     h1 {
         font-family:'League Spartan', sans-serif;
-        font-size: 24pt;
-        padding:20px;
+        font-size: 60pt;
+        margin-bottom: 10px;
         text-align:center;
+        line-height: 1;
     }
     h2 {
-        font-size: 12pt;
+        font-size: 18pt;
         padding:20px;
         text-align:center;
+
     }
     h3 {
-        font-size: 12pt;
-        padding:20px;
+        font-size: 16pt;
+        padding:15px;
         text-align:center;
     }
     p {
         font-size: 12pt;
-        padding:12px;
+        padding:15px;
         text-align:left;
     }
     div.center {
@@ -707,19 +700,25 @@ const getColor = (gdp) => {
       text-align:left;
     } 
     .div-1 {
-      background-color: #DDE6ED;
+      background-color: #BDCCD6 ;
+      padding:80px;
+
     }
     .div-2 {
-    	background-color: #BDCCD6;
+    	background-color: #DDE6ED;
+      padding: 40px;
     }
     .div-3 {
-    	background-color: #9DB2BF;
+    	background-color: #BDCCD6;
+      padding: 40px;
     }
     .div-4 {
-      background-color: #7890A1;
+      background-color: #DDE6ED;
+      padding: 40px;
     }
     .div-5 {
-    	background-color: #526D82;
+    	background-color: #BDCCD6;
+      padding: 40px;
     }
 </style>
 
