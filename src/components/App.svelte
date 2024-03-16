@@ -10,7 +10,7 @@
       
     </head>
 
-    <body style="margin:100px">
+    <body style="margin:200px">
       <h1>Two Methods for Measuring Economic Health</h1>
       <h2>Gross Domestic Product per Capita and the Gini Coefficient</h2>
 
@@ -30,12 +30,11 @@
       </div>
       
       
-
+      <h2>GDP Per Capita Globally</h2>
       <div id="gdp_choropleth" align="center">
+        <span id="mapYear" style="font-size:14px" align="right">Year: 1960</span>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
           <br>
-          <span id="mapYear" style="font-size:14px" align="right">Year: 1900</span>
-          <!-- change year in legend instead -->
         </div>
           
   
@@ -160,14 +159,7 @@
       <br>
       <br>
   
-      <div>
-        <h2>Demo Writeup from 3/1/2024</h2>
-        <h3>What have you done so far?</h3>
-        <p>This demo contains two of our planned visualizations and pulls from two datasets we cleaned. One is a scatterplot that displays the gini index and GDP per capita data for each country for any year chosen by the user. The other is the Lorenz curve which is shaped by user input of the gini index. This demo also contains much of the background information and analysis that will make up the final product's text.</p>
-        <h3>What will be the most challenging of your project to design and why?</h3>
-        <p>The most challenging aspects of finishing the project will be adding more interactive elements to our visualizations without them interfering with how said visualizations are initially displayed. Making these visualizations (and therefore interactive components) aesthetically pleasing without impeding on how effectively they communicate our message will also be challenging due in part to the subjective nature of many of the design decisions that will need to be made. Significant time may also need to be invested into forming more of a storyline that helps viewers explore our topics and better understand the economics-related message we our aiming to convey. Continuing to become familiar with d3.js syntax as well as other technical skills (such as working with GeoJSON data) will also take some time in order to accomplish the previously-mentioned tasks.</p>
-        <h2>Introduction Video from 3/8/2024</h2>
-      </div>
+    
 
       <div class="center">
         <iframe width="800" height="600" src="https://www.youtube.com/embed/Fv5OA3sOYcE"></iframe>
@@ -239,8 +231,8 @@ onMount(async () => {
 
 function drawLorenz(lorenzData){
 var margin = {top: 30, right: 30, bottom: 45, left: 60},
-width = 460 - margin.left - margin.right,
-height = 400 - margin.top - margin.bottom;
+width = 560 - margin.left - margin.right,
+height = 500 - margin.top - margin.bottom;
 
 var svg = d3.select("#lorenzCurve")
 .append("svg")
@@ -377,7 +369,7 @@ function drawScatter(filteredData) {
         filteredData = filteredData.filter(d => d.gini !== 0);    
         d3.select("#scatterplot").selectAll("*").remove();
         // Define the SVG dimensions and margins
-        const margin = { top: 20, right: 50, bottom: 50, left: 100 };
+        const margin = { top: 50, right: 100, bottom: 50, left: 110 };
         const width = 1000 - margin.left - margin.right;
         const height = 600 - margin.top - margin.bottom;
         const inner_width  = width - margin.left - margin.right;
@@ -433,31 +425,6 @@ function drawScatter(filteredData) {
         .domain(["NA", "SA", "OC", "AF", "AS", "EU"]) // Continent codes
         .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"]); // Colors for continents
 
-        //var tooltip = d3.select("#scatterplot")
-        //.append("div")
-        //.style("opacity", 0)
-        //.attr("class", "tooltip")
-        //.style("background-color", "white")
-        //.style("border", "solid")
-        //.style("border-width", "1px")
-        //.style("border-radius", "5px")
-        //.style("padding", "10px")
-
-        //var mouseover = function(d) {
-          //tooltip.style("opacity", 1)
-        //}
-        
-        //var mousemove = function(d) {
-          //tooltip.html(d.country + " has a gdp per capita of " + d.gdp + "<br>and a Gini index of " + d.gini)
-          //.style("left", (d3.mouse(this)[0]+90) + "px")
-          //.style("top", (d3.mouse(this)[1]) + "px")
-        //}
-
-        //var mouseleave = function(d) {
-          //tooltip.transition()
-          //.duration(200)
-          //.style("opacity", 0)
-        //}
 
         svg.append("g")
             .selectAll("dot")
@@ -466,7 +433,7 @@ function drawScatter(filteredData) {
             .append("circle")
             .attr("cx", function(d){ return xScale(d.gini);})
             .attr("cy", function(d){ return yScale(d.gdp);})
-            .attr("r", 5) // radius of the circles
+            .attr("r", 7) // radius of the circles
             .style("fill", function(d) { return colorScale(d.region); })
             .append("title")
             .text(d => `Country: ${d.country}\nGDP: $${d3.format(",.2f")(d.gdp)}\nGini: ${d3.format(",.3f")(d.gini)}`);
@@ -474,7 +441,9 @@ function drawScatter(filteredData) {
      // Add axis labels
      svg.append("text")
         .attr("text-anchor", "middle")
-        .attr("transform", `translate(${width / 2},${height + margin.top + 10})`)
+        .attr('x', width/2)
+        .attr('y', margin.top+500)
+        // .attr("transform", `translate(${width / 2},${height + margin.top + 10})`)
         .text("Gini Index");
 
         svg.append("text")
@@ -483,10 +452,10 @@ function drawScatter(filteredData) {
             .text("GDP Per Capita (current US$)");
         svg.append("text")
           .attr("x", width / 2)
-          .attr("y", margin.top / 4)
+          .attr("y", margin.top-80)
           .attr("text-anchor", "middle")
           .style("font-size", "1.5em")
-          .text("GDP vs Gini");
+          .text("GDP vs. Gini");
 
     // Adding Legend
     const legend = svg.append("g")
@@ -523,12 +492,14 @@ function drawScatter(filteredData) {
 const drawGDP = async (data) => {
   // dimensions
   const width = 800
-  const height = 800;
+  const height = 700;
+  var margin = {top: 0, right: 30, bottom: 45, left: 60};
 
   // Append SVG 
   const svg = d3.select('#gdp_choropleth').append('svg') 
       .attr('width', width)
       .attr('height', height);
+
 
   // Define projection
   const projection = d3.geoMercator()
@@ -542,7 +513,7 @@ const drawGDP = async (data) => {
       if (d.find(entry=>entry.country_code===code)==null){
         return "No Data"
       } else {
-        return `${d.find(entry=>entry.country_code===code).gdp.toFixed(2)} USD`
+        return `$${d.find(entry=>entry.country_code===code).gdp.toFixed(2)} USD`
       }
           }
 
@@ -551,14 +522,14 @@ const drawGDP = async (data) => {
   try {
       // Load world map data
       const world = await d3.json('http://enjalot.github.io/wwsd/data/world/world-110m.geojson');
-
+      world.features = world.features.filter (function(d) { return d.id !== "ATA"; });
       // Tooltip highlight
   const tooltip = d3.select("body").append("div")
       .attr("class", "tooltip")
       .style("opacity", 0);
 
       let mouseOver = function(d) {
-        d3.selectAll("path")
+        svg.selectAll("path")
           .transition()
           .duration(200)
           .style("opacity", .5)
@@ -573,7 +544,7 @@ const drawGDP = async (data) => {
       }
 
       let mouseLeave = function() {
-        d3.selectAll("path")
+        svg.selectAll("path")
           .transition()
           .duration(200)
           .style("opacity", 1)
@@ -594,7 +565,7 @@ const drawGDP = async (data) => {
           .on("mouseover", mouseOver)
 		      .on("mouseleave", mouseLeave)
           .append("title")
-            .text(function(d) { return `${d.properties.name} \nGDP Per Capita: $${formatGDP(d.id, data)}`});// how do i append gdp ;-;
+            .text(function(d) { return `${d.properties.name} \nGDP Per Capita: ${formatGDP(d.id, data)}`});// how do i append gdp ;-;
 
             //console.log(data.find(entry=>entry.country_code==="USA").gdp)
           
@@ -605,6 +576,8 @@ const drawGDP = async (data) => {
           .attr('min', d3.min(data, d => d.year))
           .attr('max', d3.max(data, d => d.year))
           .attr('step', 1)
+          .style('position', 'absolute')
+          .style('right', '780px')
           .on('input', function() {
               // Update map based on selected year
               const selectedYear = +this.value;
@@ -620,7 +593,7 @@ const drawGDP = async (data) => {
                   })
                   .on("mouseover", mouseOver)
 		              .on("mouseleave", mouseLeave)
-              svg.selectAll('title').text(function(d) { return `${d.properties.name} \nGDP Per Capita: $${formatGDP(d.id, filteredData)}`});
+              svg.selectAll('title').text(function(d) { return `${d.properties.name} \nGDP Per Capita: ${formatGDP(d.id, filteredData)}`});
           });
 
           //svg.append("g")
@@ -645,13 +618,16 @@ const drawGDP = async (data) => {
   } catch (error) {
       console.error('Error loading world map data:', error);
   }
+
+  
+  
 }
 
 // Function to get color based on GDP value
 const getColor = (gdp) => {
     // Define color scale
     const colorScale = d3.scaleLinear()
-        .domain(d3.extent(data, function(d){return d.gdp})) // Adjust domain based on GDP range
+        .domain([100, 110000]) // Adjust domain based on GDP range
         .range(['lightblue', 'darkblue']);
 
     // Return color based on GDP value
@@ -726,8 +702,8 @@ const getColor = (gdp) => {
         text-align:center;
     }
     p {
-        font-size: 10pt;
-        padding:10px;
+        font-size: 12pt;
+        padding:12px;
         text-align:left;
     }
     div.center {
@@ -741,6 +717,7 @@ const getColor = (gdp) => {
       text-indent:5px;
       margin:25px;
       text-align:left;
+      font-size: 12pt;
     }
     li::before { 
       content: '• '; 
