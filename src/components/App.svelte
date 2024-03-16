@@ -380,30 +380,53 @@ function drawScatter(filteredData) {
         const margin = { top: 20, right: 50, bottom: 50, left: 100 };
         const width = 1000 - margin.left - margin.right;
         const height = 600 - margin.top - margin.bottom;
+        const inner_width  = width - margin.left - margin.right;
+        const inner_height = height - margin.top - margin.bottom;
 
         // Append SVG container to the body
         const svg = d3.select("#scatterplot")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
+            .attr("width", width)
+            .attr("height", height)
             .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
         // Define scales for x and y axes
         var xScale = scaleLinear()
             .domain(d3.extent(filteredData, function(d){return d.gini}))
-            .range([0, width]);
+            .range([0, inner_width]);
         // Add x-axis
         svg.append("g")
             .attr("transform", `translate(0,${height})`)
-            .call(d3.axisBottom().scale(xScale));
+            .call(d3.axisBottom().scale(xScale).ticks()); //
 
         var yScale = scaleLinear()
             .domain(d3.extent(filteredData, function(d){return d.gdp}))
-            .range([height, 0]);
+            .range([inner_height, 0]);
         
         // Add y-axis with custom tick format
         svg.append("g")
-          .call(d3.axisLeft().scale(yScale).tickFormat(d => `$${d3.format(",")(d)}`));
+          .call(d3.axisLeft().scale(yScale).ticks().tickFormat(d => `$${d3.format(",")(d)}`));
+
+        var xAxisGrid = d3.axisBottom(xScale).tickSize(-inner_height).tickFormat('').ticks();
+        var yAxisGrid = d3.axisLeft(yScale).tickSize(-inner_width).tickFormat('').ticks();
+
+        svg.append('g')
+        .attr('class', 'x axis-grid')
+        .attr('transform', 'translate(0,' + inner_height + ')')
+        .call(xAxisGrid);
+        
+        svg.append('g')
+        .attr('class', 'y axis-grid')
+        .call(yAxisGrid);
+
+        svg.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + inner_height + ')')
+        .call(xScale);
+        
+        svg.append('g')
+        .attr('class', 'y axis')
+        .call(yScale);
 
         // Plot points with tooltip
         const colorScale = d3.scaleOrdinal()
@@ -435,7 +458,6 @@ function drawScatter(filteredData) {
           //.duration(200)
           //.style("opacity", 0)
         //}
-
 
         svg.append("g")
             .selectAll("dot")
@@ -600,6 +622,23 @@ const drawGDP = async (data) => {
 		              .on("mouseleave", mouseLeave)
               svg.selectAll('title').text(function(d) { return `${d.properties.name} \nGDP Per Capita: $${formatGDP(d.id, filteredData)}`});
           });
+
+          //svg.append("g")
+          //.attr("class", "legendThreshold")
+          //.attr("transform", "translate(5,225)");
+
+          //const legend = d3.legendColor()
+          //.labelFormat(d3.format(",.0f"))
+          //.labels(d3.legendHelpers.thresholdLabels)
+          //.labelOffset(3)
+          //.shapePadding(0)
+          //.scale(color);
+
+          //svg.select(".legendThreshold").call(legend);
+
+          svg.append("g")
+          .attr("transform", "translate(610,20)")
+          .append(() => Legend(color, {title: "Unemployment rate (%)", width: 260}));
           
         
 
@@ -709,5 +748,10 @@ const getColor = (gdp) => {
     } 
     
     body {background-color:#DDE6ED;}
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
 </style>
 
