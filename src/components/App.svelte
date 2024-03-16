@@ -35,7 +35,7 @@
         <span id="mapYear" style="font-size:14px" align="right">Year: 1960</span>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
           <br>
-        </div>
+      </div>
           
   
       <div>
@@ -329,7 +329,7 @@ d3.select("#giniSlider").on("input", function(){
 });
 
 
-// axis lables 
+// axis labels 
 svg.append("text")
     .attr("class", "x label")
     .attr("text-anchor", "end")
@@ -360,6 +360,21 @@ svg.append("text")
 // tooltip to show 
 
 };
+
+function make_x_axis() {        
+    return d3.svg.axis()
+        .scale(x)
+         .orient("bottom")
+         .ticks(5)
+}
+
+function make_y_axis() {        
+    return d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(5)
+}
+
 // Define the Scatter component as a Svelte function
 function drawScatter(filteredData) {
         const initialYear = document.getElementById('yearSelect').value
@@ -372,54 +387,57 @@ function drawScatter(filteredData) {
         const margin = { top: 50, right: 100, bottom: 50, left: 110 };
         const width = 1000 - margin.left - margin.right;
         const height = 600 - margin.top - margin.bottom;
-        const inner_width  = width - margin.left - margin.right;
-        const inner_height = height - margin.top - margin.bottom;
+        //const inner_width  = width - margin.left - margin.right;
+        //const inner_height = height - margin.top - margin.bottom;
 
         // Append SVG container to the body
         const svg = d3.select("#scatterplot")
-            .attr("width", width)
-            .attr("height", height)
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
         // Define scales for x and y axes
         var xScale = scaleLinear()
             .domain(d3.extent(filteredData, function(d){return d.gini}))
-            .range([0, inner_width]);
+            .range([0, width]);
+        
+        var yScale = scaleLinear()
+            .domain(d3.extent(filteredData, function(d){return d.gdp}))
+            .range([height, 0]);
+        
         // Add x-axis
         svg.append("g")
             .attr("transform", `translate(0,${height})`)
-            .call(d3.axisBottom().scale(xScale).ticks()); //
-
-        var yScale = scaleLinear()
-            .domain(d3.extent(filteredData, function(d){return d.gdp}))
-            .range([inner_height, 0]);
+            .call(d3.axisBottom().scale(xScale)); //
         
         // Add y-axis with custom tick format
         svg.append("g")
-          .call(d3.axisLeft().scale(yScale).ticks().tickFormat(d => `$${d3.format(",")(d)}`));
+          .call(d3.axisLeft().scale(yScale).tickFormat(d => `$${d3.format(",")(d)}`));
 
-        var xAxisGrid = d3.axisBottom(xScale).tickSize(-inner_height).tickFormat('').ticks();
-        var yAxisGrid = d3.axisLeft(yScale).tickSize(-inner_width).tickFormat('').ticks();
+        //var xAxisGrid = d3.axisBottom(xScale).tickSize(-inner_height).tickFormat('').ticks();
+        //var yAxisGrid = d3.axisLeft(yScale).tickSize(-inner_width).tickFormat('').ticks();
 
         // the four append methods below are all for the grid
-        svg.append('g')
-        .attr('class', 'x axis-grid')
-        .attr('transform', 'translate(0,' + inner_height + ')')
-        .call(xAxisGrid);
+        //svg.append('g')
+        //.attr('class', 'x axis-grid')
+        //.attr('transform', 'translate(0,' + inner_height + ')')
+        //.call(xAxisGrid);
         
-        svg.append('g')
-        .attr('class', 'y axis-grid')
-        .call(yAxisGrid);
+        //svg.append('g')
+        //.attr('class', 'y axis-grid')
+        //.call(yAxisGrid);
 
-        svg.append('g')
-        .attr('class', 'x axis')
-        .attr('transform', 'translate(0,' + inner_height + ')')
-        .call(xScale);
+        //svg.append('g')
+        //.attr('class', 'x axis')
+        //.attr('transform', 'translate(0,' + inner_height + ')')
+        //.call(xScale);
         
-        svg.append('g')
-        .attr('class', 'y axis')
-        .call(yScale);
+        //svg.append('g')
+        //.attr('class', 'y axis')
+        //.call(yScale);
+
+        let hovered = -1;
 
         // Plot points with tooltip
         const colorScale = d3.scaleOrdinal()
@@ -439,12 +457,12 @@ function drawScatter(filteredData) {
             .text(d => `Country: ${d.country}\nGDP: $${d3.format(",.2f")(d.gdp)}\nGini: ${d3.format(",.3f")(d.gini)}`);
       
      // Add axis labels
-     svg.append("text")
-        .attr("text-anchor", "middle")
-        .attr('x', width/2)
-        .attr('y', margin.top+500)
-        // .attr("transform", `translate(${width / 2},${height + margin.top + 10})`)
-        .text("Gini Index");
+    svg.append("text")
+      .attr("text-anchor", "middle")
+      .attr('x', width/2)
+      .attr('y', margin.top+500)
+      // .attr("transform", `translate(${width / 2},${height + margin.top + 10})`)
+      .text("Gini Index");
 
     // Add axis labels
     svg.append("text")
@@ -540,8 +558,8 @@ const drawGDP = async (data) => {
           .duration(200)
           .style("opacity", 1)
           .style("stroke", "black");
-        
          //testing
+         // can a tooltip be added here?
       }
 
       let mouseLeave = function() {
@@ -550,7 +568,6 @@ const drawGDP = async (data) => {
           .duration(200)
           .style("opacity", 1)
           .style("stroke", "transparent");
-      
       }
 
       // Draw map paths
@@ -713,10 +730,5 @@ const getColor = (gdp) => {
     } 
     
     body {background-color:#DDE6ED;}
-
-    svg {
-      width: 100%;
-      height: 100%;
-    }
 </style>
 
