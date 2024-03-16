@@ -59,13 +59,6 @@
         <span id="giniVal" style="font-size:14px" align="center">Gini Coefficient: 0.1</span>
         <div id="lorenzInfo">The poorest 50% of the population owns 42% of the wealth.</div>
           <br></div>
-      
-  
-      <div style="display: contents">
-        <svg id="gini_choropleth" width="400" height="300"></svg>
-        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-        <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
-      </div>
   
       <div>
         <p>Comparing the Two Measurements:</p>
@@ -120,8 +113,9 @@
           <option value="2020">2020</option>
         </select>
       </div>
-      <div style="display: contents">
+      <div>
         <svg id="scatterplot" width="400" height="300"></svg>
+        
       </div>
 
       <br>
@@ -362,83 +356,112 @@ svg.append("text")
 };
 // Define the Scatter component as a Svelte function
 function drawScatter(filteredData) {
-        const initialYear = document.getElementById('yearSelect').value
-        let yearAsInteger = parseInt(initialYear);
-        filteredData = filteredData.filter(d => d.year === yearAsInteger);
-        filteredData = filteredData.filter(d => d.gdp !== 0);   
-        filteredData = filteredData.filter(d => d.gini !== 0);    
-        d3.select("#scatterplot").selectAll("*").remove();
-        // Define the SVG dimensions and margins
-        const margin = { top: 50, right: 100, bottom: 50, left: 110 };
-        const width = 1000 - margin.left - margin.right;
-        const height = 600 - margin.top - margin.bottom;
+      const initialYear = document.getElementById('yearSelect').value
+      let yearAsInteger = parseInt(initialYear);
+      filteredData = filteredData.filter(d => d.year === yearAsInteger);
+      filteredData = filteredData.filter(d => d.gdp !== 0);   
+      filteredData = filteredData.filter(d => d.gini !== 0);    
+      d3.select("#scatterplot").selectAll("*").remove();
+    // Define the SVG dimensions and margins
+      const margin = { top: 50, right: 100, bottom: 50, left: 110 };
+      const width = 1000 - margin.left - margin.right;
+      const height = 600 - margin.top - margin.bottom;
 
-        // Append SVG container to the body
-        const svg = d3.select("#scatterplot")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
+    // Append SVG container to the body
+      const svg = d3.select("#scatterplot")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        // Define scales for x and y axes
-        var xScale = scaleLinear()
-            .domain(d3.extent(filteredData, function(d){return d.gini}))
-            .range([0, width]);
-        // Add x-axis
-        svg.append("g")
-            .attr("transform", `translate(0,${height})`)
-            .call(d3.axisBottom().scale(xScale));
+    // Define scale for x
+      var xScale = scaleLinear()
+          .domain(d3.extent(filteredData, function(d){return d.gini}))
+          .range([0, width]);
+      var xAxis = d3.axisBottom()
+            .scale(xScale)
+    // Add x-axis
+      svg.append("g")
+          .attr("transform", `translate(0,${height})`)
+          .call(xAxis);
+    // x grid 
+      svg.append("g")
+      .attr("class", "grid")
+      .attr("transform", `translate(0,${height})`)
+      .call(xAxis.tickSize(-height).tickFormat(""))
+      .selectAll("line").style("stroke", "#9DB2BF");
+      
+    // define scale for y
+      var yScale = scaleLinear()
+          .domain(d3.extent(filteredData, function(d){return d.gdp}))
+          .range([height, 0]);
+      var yAxis = d3.axisLeft()
+          .scale(yScale)
+          .tickFormat(d => `$${d3.format(",")(d)}`);
+    // Add y-axis
+      svg.append("g")
+        .call(yAxis);
+    // y grid
+      svg.append("g")		
+        .attr("class", "grid")
+        .call(yAxis.tickSize(-width).tickFormat(""))
+        .selectAll('line').style("stroke", "#9DB2BF");
+    
+  
 
-        var yScale = scaleLinear()
-            .domain(d3.extent(filteredData, function(d){return d.gdp}))
-            .range([height, 0]);
-        
-        // Add y-axis with custom tick format
-        svg.append("g")
-          .call(d3.axisLeft().scale(yScale).tickFormat(d => `$${d3.format(",")(d)}`));
-
-        // Plot points with tooltip
-        const colorScale = d3.scaleOrdinal()
-        .domain(["NA", "SA", "OC", "AF", "AS", "EU"]) // Continent codes
-        .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"]); // Colors for continents
+    // Plot points with tooltip
+      const colorScale = d3.scaleOrdinal()
+      .domain(["NA", "SA", "OC", "AF", "AS", "EU"]) // Continent codes
+      .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"]); // Colors for continents
+      
 
 
+      svg.append("g")
+          .selectAll("dot")
+          .data(filteredData)
+          .enter()
+          .append("circle")
+          .attr("cx", function(d){ return xScale(d.gini);})
+          .attr("cy", function(d){ return yScale(d.gdp);})
+          .attr("r", 7) // radius of the circles
+          .style("fill", function(d) { return colorScale(d.region); })
+          .append("title")
+          .text(d => `Country: ${d.country}
+          \nGDP: $${d3.format(",.2f")(d.gdp)}
+          \nGini: ${d3.format(",.3f")(d.gini)}`);
+    
+    
+      // Add axis labels
+    svg.append("text")
+      .attr("text-anchor", "middle")
+      .attr('x', width/2)
+      .attr('y', margin.top+500)
+      // .attr("transform", `translate(${width / 2},${height + margin.top + 10})`)
+      .text("Gini Index");
 
-        svg.append("g")
-            .selectAll("dot")
-            .data(filteredData)
-            .enter()
-            .append("circle")
-            .attr("cx", function(d){ return xScale(d.gini);})
-            .attr("cy", function(d){ return yScale(d.gdp);})
-            .attr("r", 7) // radius of the circles
-            .style("fill", function(d) { return colorScale(d.region); })
-            .append("title")
-            .text(d => `Country: ${d.country}\nGDP: $${d3.format(",.2f")(d.gdp)}\nGini: ${d3.format(",.3f")(d.gini)}`);
-        // Add axis labels
-     // Add axis labels
-     svg.append("text")
-        .attr("text-anchor", "middle")
-        .attr('x', width/2)
-        .attr('y', margin.top+500)
-        // .attr("transform", `translate(${width / 2},${height + margin.top + 10})`)
-        .text("Gini Index");
-
-        svg.append("text")
-            .attr("text-anchor", "middle")
-            .attr("transform", `translate(${-margin.left + 10},${height / 2})rotate(-90)`)
-            .text("GDP Per Capita (current US$)");
-        svg.append("text")
-          .attr("x", width / 2)
-          .attr("y", margin.top-80)
+      svg.append("text")
           .attr("text-anchor", "middle")
-          .style("font-size", "1.5em")
-          .text("GDP vs. Gini");
+          .attr("transform", `translate(${-margin.left + 10},${height / 2})rotate(-90)`)
+          .text("GDP Per Capita (current US$)");
+      svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", margin.top-80)
+        .attr("text-anchor", "middle")
+        .style("font-size", "1.5em")
+        .text("GDP vs. Gini");
 
     // Adding Legend
+    svg.append('rect')
+      .attr("width", 130)
+      .attr("height", 150)
+      .attr("x", width-margin.right-32)
+      .attr("y", margin.top-10)
+      .attr("fill", "#DDE6ED")
+      .attr("fill-opacity", "0.7")
     const legend = svg.append("g")
         .attr("class", "legend")
-        .attr("transform", `translate(${width - margin.right - 15},${margin.top+ 20})`);
+        .attr("transform", `translate(${width - margin.right - 15},${margin.top+ 20})`)
+        
 
     const continents = ["North America", "South America", "Oceania", "Africa", "Asia", "Europe"]; 
 
@@ -462,7 +485,8 @@ function drawScatter(filteredData) {
     legend.append("text")
         .attr("x", 0)
         .attr("y", -10)
-        .text("Regions");
+        .text("Regions")
+        .style("font-weight", "bold");
   }
 
 
@@ -518,7 +542,7 @@ const drawGDP = async (data) => {
           .style("opacity", 1)
           .style("stroke", "black");
         
-         //testing
+
       }
 
       let mouseLeave = function() {
@@ -543,7 +567,7 @@ const drawGDP = async (data) => {
           .on("mouseover", mouseOver)
 		      .on("mouseleave", mouseLeave)
           .append("title")
-            .text(function(d) { return `${d.properties.name} \nGDP Per Capita: ${formatGDP(d.id, data)}`});// how do i append gdp ;-;
+            .text(function(d) { return `${d.properties.name} \nGDP Per Capita: ${formatGDP(d.id, data)}`});
 
             //console.log(data.find(entry=>entry.country_code==="USA").gdp)
           
@@ -646,6 +670,9 @@ const getColor = (gdp) => {
       box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.25);
     }   */
 
+    
+
+    
     h1 {
         font-family:'League Spartan', sans-serif;
         font-size: 24pt;
@@ -684,6 +711,7 @@ const getColor = (gdp) => {
       content: '• '; 
       text-align:left;
     } 
+
     
     body {background-color:#DDE6ED;}
 </style>
