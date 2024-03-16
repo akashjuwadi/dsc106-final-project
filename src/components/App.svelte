@@ -402,6 +402,7 @@ function drawScatter(filteredData) {
         var xAxisGrid = d3.axisBottom(xScale).tickSize(-inner_height).tickFormat('').ticks();
         var yAxisGrid = d3.axisLeft(yScale).tickSize(-inner_width).tickFormat('').ticks();
 
+        // the four append methods below are all for the grid
         svg.append('g')
         .attr('class', 'x axis-grid')
         .attr('transform', 'translate(0,' + inner_height + ')')
@@ -425,7 +426,6 @@ function drawScatter(filteredData) {
         .domain(["NA", "SA", "OC", "AF", "AS", "EU"]) // Continent codes
         .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"]); // Colors for continents
 
-
         svg.append("g")
             .selectAll("dot")
             .data(filteredData)
@@ -437,7 +437,7 @@ function drawScatter(filteredData) {
             .style("fill", function(d) { return colorScale(d.region); })
             .append("title")
             .text(d => `Country: ${d.country}\nGDP: $${d3.format(",.2f")(d.gdp)}\nGini: ${d3.format(",.3f")(d.gini)}`);
-        // Add axis labels
+      
      // Add axis labels
      svg.append("text")
         .attr("text-anchor", "middle")
@@ -446,16 +446,18 @@ function drawScatter(filteredData) {
         // .attr("transform", `translate(${width / 2},${height + margin.top + 10})`)
         .text("Gini Index");
 
-        svg.append("text")
-            .attr("text-anchor", "middle")
-            .attr("transform", `translate(${-margin.left + 10},${height / 2})rotate(-90)`)
-            .text("GDP Per Capita (current US$)");
-        svg.append("text")
-          .attr("x", width / 2)
-          .attr("y", margin.top-80)
-          .attr("text-anchor", "middle")
-          .style("font-size", "1.5em")
-          .text("GDP vs. Gini");
+    // Add axis labels
+    svg.append("text")
+      .attr("text-anchor", "middle")
+      .attr("transform", `translate(${-margin.left + 10},${height / 2})rotate(-90)`)
+      .text("GDP Per Capita (current US$)");
+    
+    svg.append("text")
+      .attr("x", width / 2)
+      .attr("y", margin.top-80)
+      .attr("text-anchor", "middle")
+      .style("font-size", "1.5em")
+      .text("GDP vs. Gini");
 
     // Adding Legend
     const legend = svg.append("g")
@@ -516,17 +518,16 @@ const drawGDP = async (data) => {
         return `$${d.find(entry=>entry.country_code===code).gdp.toFixed(2)} USD`
       }
           }
-
-  
   
   try {
-      // Load world map data
-      const world = await d3.json('http://enjalot.github.io/wwsd/data/world/world-110m.geojson');
+      // Load world map data with //
+      const world = await d3.json('world-110m.geojson')
       world.features = world.features.filter (function(d) { return d.id !== "ATA"; });
       // Tooltip highlight
-  const tooltip = d3.select("body").append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
+      
+      const tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
 
       let mouseOver = function(d) {
         svg.selectAll("path")
@@ -595,19 +596,6 @@ const drawGDP = async (data) => {
 		              .on("mouseleave", mouseLeave)
               svg.selectAll('title').text(function(d) { return `${d.properties.name} \nGDP Per Capita: ${formatGDP(d.id, filteredData)}`});
           });
-
-          //svg.append("g")
-          //.attr("class", "legendThreshold")
-          //.attr("transform", "translate(5,225)");
-
-          //const legend = d3.legendColor()
-          //.labelFormat(d3.format(",.0f"))
-          //.labels(d3.legendHelpers.thresholdLabels)
-          //.labelOffset(3)
-          //.shapePadding(0)
-          //.scale(color);
-
-          //svg.select(".legendThreshold").call(legend);
 
           svg.append("g")
           .attr("transform", "translate(610,20)")
