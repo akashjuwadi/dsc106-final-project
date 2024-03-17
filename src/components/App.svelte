@@ -207,7 +207,6 @@
     });
     
     drawGDP(data);
-    drawLegend(data);
     
   });
 
@@ -526,7 +525,7 @@ const drawGDP = async (data) => {
           }
 
   // Add legend
-  const gdpRange = d3.extent(data, function(d){return d.gdp;});
+  const gdpRange = [0, 110000];
     
     // Define color scale
   const colorScale = d3.scaleSequential(['lightblue', 'darkblue']).domain(gdpRange);
