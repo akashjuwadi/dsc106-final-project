@@ -614,7 +614,10 @@ const drawGDP = async (data) => {
           .on("mouseover", mouseOver)
 		      .on("mouseleave", mouseLeave)
           .append("title")
-            .text(function(d) { return `${d.properties.name} \nGDP Per Capita: ${formatGDP(d.id, data)}`});
+          .text(function(d) { 
+            const gdpPerCapita = formatGDP(d.id, data);
+            return `${d.properties.name} \nGDP Per Capita: ${gdpPerCapita !== '$0.00 USD' ? gdpPerCapita : 'No Data'}`;
+	});
 
 
       // Add slider
