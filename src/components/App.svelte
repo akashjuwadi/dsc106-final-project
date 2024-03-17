@@ -164,7 +164,18 @@
   import * as d3 from 'd3';
   import { onMount } from 'svelte';
   import { scaleLinear } from 'd3-scale';
-  // import {Legend} from "@d3/color-legend"
+  // import Legend from "./Legend-GDP.svelte";
+  // import {
+  //   format,
+  //   groups,
+  //   interpolatePiYG,
+  //   pairs,
+  //   quantile,
+  //   range,
+  //   scaleSequential,
+  // } from "d3";
+
+  // const color = scaleSequential(d3.interpolateBlues).domain(d3.extent(gdpData, function(d){return d.gdp;}));
 
   const width = 928;
   const height = 500;
@@ -196,6 +207,7 @@
     });
     
     drawGDP(data);
+    drawLegend(data);
     
   });
 
@@ -481,7 +493,7 @@ function drawScatter(filteredData) {
         .attr("y", -10)
         .text("Regions")
         .style("font-weight", "bold");
-  }
+  };
 
 
 // define GDP choropleth as a Svelte Function
@@ -512,6 +524,50 @@ const drawGDP = async (data) => {
         return `$${d.find(entry=>entry.country_code===code).gdp.toFixed(2)} USD`
       }
           }
+
+  // Add legend
+  const gdpRange = d3.extent(data, function(d){return d.gdp;});
+    
+    // Define color scale
+  const colorScale = d3.scaleSequential(['lightblue', 'darkblue']).domain(gdpRange);
+  const legendWidth = 15;
+  const legendHeight = 150;
+
+  const legend = svg.append("g").attr("transform", "translate(700,20)");
+
+  const legendGradient = legend.append("defs")
+        .append("linearGradient")
+        .attr("id", "linear-gradient")
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "0%")
+        .attr("y2", "100%");
+  
+  legendGradient.append("stop")
+      .attr("offset", "0%")
+      .attr("stop-color", colorScale(gdpRange[1]));
+
+  legendGradient.append("stop")
+      .attr("offset", "100%")
+      .attr("stop-color", colorScale(gdpRange[0]));
+
+  legend.append("rect")
+      .attr("width", legendWidth)
+      .attr("height", legendHeight)
+      .style("fill", "url(#linear-gradient)");
+
+  const legendScale = d3.scaleLinear()
+      .domain([gdpRange[0], gdpRange[1]])
+      .range([legendHeight, 0]);
+
+    const legendAxis = d3.axisRight(legendScale)
+    .tickFormat(d3.format("$,"));
+
+    legend.append("g")
+          .attr("transform", `translate(${legendWidth},0)`)
+          .call(legendAxis);
+
+
   
   try {
       // Load world map data with //
@@ -561,8 +617,6 @@ const drawGDP = async (data) => {
           .append("title")
             .text(function(d) { return `${d.properties.name} \nGDP Per Capita: ${formatGDP(d.id, data)}`});
 
-            //console.log(data.find(entry=>entry.country_code==="USA").gdp)
-          
 
       // Add slider
       const slider = d3.select('#gdp_choropleth').append('input')
@@ -599,7 +653,7 @@ const drawGDP = async (data) => {
 
   
   
-}
+};
 
 // Function to get color based on GDP value
 const getColor = (gdp) => {
