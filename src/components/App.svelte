@@ -46,11 +46,15 @@
         <h3>Why could GDP possibly be flawed?</h3>
         <p>GDP doesn't give a full picture of how economic prosperity is distributed because:</p>
         <ul>
-          <li>Large countries may have greater GDPs simply because they have a large population. leading many to prefer using GDP per capita.</li>
-          <li>A high GDP per capita may also not indicate that all of the nation's people are benefitting much from the total wealth due to how it's distributed across the population.</li>
+          <li>Large countries may have greater GDPs simply because they have a large population. GDP per capita can help with this.</li>
+          <li>A high GDP per capita doesn't mean that all of the nation's people are benefitting equally, depending on how wealth is distributed across the population.</li>
         </ul>
         <h3>The Gini Index</h3>
-        <p>Economic inequality within a nation can be indicated with the Gini index, a metric derived from the Lorenz curve which is a graph of the population's income distribution. The graph has the percent of the population on the x-axis and the percent of overall income earned by said percent of the population on the y-axis. A line starting from the origin and angled at 45 degrees represents perfect equality because x percent of the population would earn exactly x percent of the income. The area between the Lorenz curve and said straight line is the Gini index, meaning a greater Gini index indicates greater inequality.</p>
+        <p>Economic inequality within a nation can be indicated with the Gini Coefficient, 
+          a metric derived from the Lorenz curve. The Lorenz Curve is a graph of the population's income distribution. 
+          The graph has the percent of the population on the x-axis and the percent of overall income earned on the y-axis. 
+          A line starting from the origin and angled at 45 degrees represents perfect equality. Along this line, any x percent of the population earns exactly x percent of the total income. 
+          The area between the Lorenz curve and the 45 degree line is the Gini Coefficient. A greater Gini Coefficient indicates greater inequality.</p>
   
       <div id="lorenzCurve" align="center"><input type="range" name="range" class="slider" id="giniSlider" value="0.1"
         min="0.1" max="0.5" step="0.1">
@@ -60,20 +64,11 @@
         </div>
         <br>
         <br>
+    </div>
   
-      
 
     <div class="div-4">
-      <div>
-        <p>Comparing the Two Measurements:</p>
-        <ul>
-          <li>There are pros and cons to using each of the measurements.</li>
-          <li>GDP measures economic activity well, but fails to provide information on what proportion of the population is involved in said activity.</li>
-          <li>The Gini index descrives wealth distribution well, but does not indicate the level of either cumulative or average wealth.</li>
-          <li>A more accurate picture can be acquired through looking at both measures.</li>
-        </ul>  
-      </div>
-
+    
 
       <div>
         <h3>Do these two metrics always agree for each country?</h3>
@@ -125,9 +120,10 @@
  
       <div>
         <h3>Notice how weak the correlation between the two metrics is throughout the years?</h3>
-        <p>In 2020, the United States had a superior gdp per capita value than 27 of 29 European nations yet had a worse Gini index than all but one of them. How can that be?</p>
-        <br>
-        <p>If only one metric was satisfactory for measuring an economy's health, the correlation between the two would be nearly perfect given they would always be "agreeing" on the relative health of each economy when compared to that of another. However, it can be seen that this is not the case given it is fairly common for a country to have a more impressive GDP per capita than another (a greater value along the y-axis) but have a less impressive gini index (a greater value along the x-axis).</p> 
+        <p>In 2020, the United States had a higher GDP per Capita than 27 of 29 European nations, yet had a worse Gini index than all but one of them. How can that be?</p>
+        
+        <p>If only one metric was satisfactory for measuring an economy's health, the correlation between the two would be nearly perfect beause they would always "agree" on the relative health of the economy. However, it can be seen that this is not the case. 
+          It is fairly common for a country to have a more impressive GDP per Capita (a greater value along the y-axis) but have a less impressive Gini Coefficient (a greater value along the x-axis).</p> 
       </div>
     </div>
       <br>
@@ -136,13 +132,15 @@
 
     <div class="div-5">
       <div>
-        <h3>So why consider both metrics?</h3>
+        <h3>What have we learned?</h3>
         <ul>
           <li>GDP measures economic activity well, but fails to provide information on what proportion of the population is involved in said activity.</li>
-          <li>The Gini index descrives wealth distribution well, but does not indicate the level of either cumulative or average wealth.</li>
-          <li>A more accurate picture can be depicted by looking at both measures because each of their pros can be extracted and cons negated.</li>
+          <li>The Gini index describes wealth distribution well, but does not indicate the level of either cumulative or average wealth.</li>
+          <li>A more complete picture is obtained by considering both metrics, and taking into account each of their strengths and weaknesses.</li>
         </ul>
-        <p>This economics example is a reminder of why careful feature selection through the use of exploratory data analysis (EDA) is such as important first step of the data science process.</p>
+        <p>This economics example shows how important domain knowledge is in developing effective data visualizations. 
+          Now we know what information GDP can provide, and what information is better conveyed with the Gini Coefficient. 
+          This applies to a wide variety of subjects! Next time you're making a visualization, consider: is this the best metric for my story?</p>
       </div>
 
       <br>
@@ -256,9 +254,9 @@ svg.append("g")
 
 // 45 degree line
 svg.append('line')
-    .style("stroke", "darkgreen")
+    .style("stroke", "#CF541F")
     .style("stroke-dasharray", ("3, 3"))
-    .style("stroke-width", 3)
+    .style("stroke-width", 4)
     .attr("x1", width)
     .attr("y1", 0)
     .attr("x2", 0)
@@ -276,8 +274,6 @@ function filterData(data, giniValue){
 };
 
 
-
-
 // initialize line
 var line = svg.append('g')
     .append("path")
@@ -288,7 +284,7 @@ var line = svg.append('g')
             )
         .attr("stroke", function(d){return "darkblue"})
         .style("stroke-width", 3)
-        .style("fill", "lightblue")
+        .style("fill", "#A2D7D4")
         
 
 
@@ -655,7 +651,7 @@ const getColor = (gdp) => {
         font-size:12px;
         line-height: 1.5;
         background-color:  #DDE6ED;
-        padding: 40px;
+        /* padding: 40px; */
     }
 
     
